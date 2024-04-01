@@ -1,44 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using ConverseSpace.Data.Entities;
+﻿using ConverseSpace.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+// ReSharper disable All
 
-namespace ConverseSpace.Data.Context;
+namespace ConverseSpace.Data;
 
 public partial class CSDBContext : DbContext
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public CSDBContext(DbContextOptions<CSDBContext> options)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         : base(options)
     {
     }
 
-    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<CategoryEntity> Categories { get; set; }
 
-    public virtual DbSet<Comment> Comments { get; set; }
+    public virtual DbSet<CommentEntityEntity> Comments { get; set; }
 
-    public virtual DbSet<CommentContentMedia> CommentContentMedia { get; set; }
+    public virtual DbSet<CommentContentMediaEntity> CommentContentMedia { get; set; }
 
-    public virtual DbSet<CommentDislike> CommentDislikes { get; set; }
+    public virtual DbSet<CommentDislikeEntity> CommentDislikes { get; set; }
 
-    public virtual DbSet<CommentLike> CommentLikes { get; set; }
+    public virtual DbSet<CommentLikeEntity> CommentLikes { get; set; }
 
-    public virtual DbSet<Community> Communities { get; set; }
+    public virtual DbSet<CommunityEntity> Communities { get; set; }
 
-    public virtual DbSet<CommunityTag> CommunityTags { get; set; }
+    public virtual DbSet<CommunityTagEntity> CommunityTags { get; set; }
 
-    public virtual DbSet<Post> Posts { get; set; }
+    public virtual DbSet<PostEntity> Posts { get; set; }
 
     public virtual DbSet<PostContentMedia> PostContentMedia { get; set; }
 
     public virtual DbSet<PostDislike> PostDislikes { get; set; }
 
-    public virtual DbSet<PostLike> PostLikes { get; set; }
+    public virtual DbSet<PostLikeEntity> PostLikes { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<RoleEntity> Roles { get; set; }
 
-    public virtual DbSet<Subcategory> Subcategories { get; set; }
+    public virtual DbSet<SubcategoryEntity> Subcategories { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserEntity> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,7 +48,7 @@ public partial class CSDBContext : DbContext
             .HasPostgresEnum("media_type", new[] { "img", "video", "audio", "gif" })
             .HasPostgresEnum("status_post", new[] { "published", "suggested", "rejected", "deleted" });
 
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<CategoryEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("categories_pkey");
 
@@ -61,7 +62,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnName("title");
         });
 
-        modelBuilder.Entity<Comment>(entity =>
+        modelBuilder.Entity<CommentEntityEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("comments_pkey");
 
@@ -89,7 +90,7 @@ public partial class CSDBContext : DbContext
                 .HasConstraintName("comments_post_id_fkey");
         });
 
-        modelBuilder.Entity<CommentContentMedia>(entity =>
+        modelBuilder.Entity<CommentContentMediaEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("comment_content_media_pkey");
 
@@ -103,13 +104,13 @@ public partial class CSDBContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("content");
 
-            entity.HasOne(d => d.CommentNavigation).WithMany(p => p.CommentContentMedia)
+            entity.HasOne(d => d.CommentEntityEntityNavigation).WithMany(p => p.CommentContentMedia)
                 .HasForeignKey(d => d.Comment)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_content_media_comment_fkey");
         });
 
-        modelBuilder.Entity<CommentDislike>(entity =>
+        modelBuilder.Entity<CommentDislikeEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("comment_dislikes_pkey");
 
@@ -121,18 +122,18 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.User).HasColumnName("user");
 
-            entity.HasOne(d => d.CommentNavigation).WithMany(p => p.CommentDislikes)
+            entity.HasOne(d => d.CommentEntityEntityNavigation).WithMany(p => p.CommentDislikes)
                 .HasForeignKey(d => d.Comment)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_dislikes_comment_fkey");
 
-            entity.HasOne(d => d.UserNavigation).WithMany(p => p.CommentDislikes)
+            entity.HasOne(d => d.UserEntityNavigation).WithMany(p => p.CommentDislikes)
                 .HasForeignKey(d => d.User)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_dislikes_user_fkey");
         });
 
-        modelBuilder.Entity<CommentLike>(entity =>
+        modelBuilder.Entity<CommentLikeEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("comment_likes_pkey");
 
@@ -144,18 +145,18 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.User).HasColumnName("user");
 
-            entity.HasOne(d => d.CommentNavigation).WithMany(p => p.CommentLikes)
+            entity.HasOne(d => d.CommentEntityEntityNavigation).WithMany(p => p.CommentLikes)
                 .HasForeignKey(d => d.Comment)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_likes_comment_fkey");
 
-            entity.HasOne(d => d.UserNavigation).WithMany(p => p.CommentLikes)
+            entity.HasOne(d => d.UserEntityNavigation).WithMany(p => p.CommentLikes)
                 .HasForeignKey(d => d.User)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_likes_user_fkey");
         });
 
-        modelBuilder.Entity<Community>(entity =>
+        modelBuilder.Entity<CommunityEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("communities_pkey");
 
@@ -185,7 +186,7 @@ public partial class CSDBContext : DbContext
                 .HasConstraintName("communities_created_by_fkey");
         });
 
-        modelBuilder.Entity<CommunityTag>(entity =>
+        modelBuilder.Entity<CommunityTagEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("community_tags_pkey");
 
@@ -202,7 +203,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("title");
 
-            entity.HasOne(d => d.CommunityNavigation).WithMany(p => p.CommunityTags)
+            entity.HasOne(d => d.CommunityEntityNavigation).WithMany(p => p.CommunityTags)
                 .HasForeignKey(d => d.Community)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("community_tags_community_fkey");
@@ -210,11 +211,11 @@ public partial class CSDBContext : DbContext
             entity.HasMany(d => d.Posts).WithMany(p => p.Tags)
                 .UsingEntity<Dictionary<string, object>>(
                     "PostTag",
-                    r => r.HasOne<Post>().WithMany()
+                    r => r.HasOne<PostEntity>().WithMany()
                         .HasForeignKey("Post")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("post_tags_post_fkey"),
-                    l => l.HasOne<CommunityTag>().WithMany()
+                    l => l.HasOne<CommunityTagEntity>().WithMany()
                         .HasForeignKey("Tag")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("post_tags_tag_fkey"),
@@ -227,7 +228,7 @@ public partial class CSDBContext : DbContext
                     });
         });
 
-        modelBuilder.Entity<Post>(entity =>
+        modelBuilder.Entity<PostEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("posts_pkey");
 
@@ -255,11 +256,11 @@ public partial class CSDBContext : DbContext
             entity.HasMany(d => d.Subcategories).WithMany(p => p.Posts)
                 .UsingEntity<Dictionary<string, object>>(
                     "PostSubcategory",
-                    r => r.HasOne<Subcategory>().WithMany()
+                    r => r.HasOne<SubcategoryEntity>().WithMany()
                         .HasForeignKey("Subcategory")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("post_subcategories_subcategory_fkey"),
-                    l => l.HasOne<Post>().WithMany()
+                    l => l.HasOne<PostEntity>().WithMany()
                         .HasForeignKey("Post")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("post_subcategories_post_fkey"),
@@ -286,7 +287,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnName("content");
             entity.Property(e => e.Post).HasColumnName("post");
 
-            entity.HasOne(d => d.PostNavigation).WithMany(p => p.PostContentMedia)
+            entity.HasOne(d => d.PostEntityNavigation).WithMany(p => p.PostContentMedia)
                 .HasForeignKey(d => d.Post)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("post_content_media_post_fkey");
@@ -304,18 +305,18 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Post).HasColumnName("post");
             entity.Property(e => e.User).HasColumnName("user");
 
-            entity.HasOne(d => d.PostNavigation).WithMany(p => p.PostDislikes)
+            entity.HasOne(d => d.PostEntityNavigation).WithMany(p => p.PostDislikes)
                 .HasForeignKey(d => d.Post)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("post_dislikes_post_fkey");
 
-            entity.HasOne(d => d.UserNavigation).WithMany(p => p.PostDislikes)
+            entity.HasOne(d => d.UserEntityNavigation).WithMany(p => p.PostDislikes)
                 .HasForeignKey(d => d.User)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("post_dislikes_user_fkey");
         });
 
-        modelBuilder.Entity<PostLike>(entity =>
+        modelBuilder.Entity<PostLikeEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("post_likes_pkey");
 
@@ -327,18 +328,18 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Post).HasColumnName("post");
             entity.Property(e => e.User).HasColumnName("user");
 
-            entity.HasOne(d => d.PostNavigation).WithMany(p => p.PostLikes)
+            entity.HasOne(d => d.PostEntityNavigation).WithMany(p => p.PostLikes)
                 .HasForeignKey(d => d.Post)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("post_likes_post_fkey");
 
-            entity.HasOne(d => d.UserNavigation).WithMany(p => p.PostLikes)
+            entity.HasOne(d => d.UserEntityNavigation).WithMany(p => p.PostLikes)
                 .HasForeignKey(d => d.User)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("post_likes_user_fkey");
         });
 
-        modelBuilder.Entity<Role>(entity =>
+        modelBuilder.Entity<RoleEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("roles_pkey");
 
@@ -352,7 +353,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnName("title");
         });
 
-        modelBuilder.Entity<Subcategory>(entity =>
+        modelBuilder.Entity<SubcategoryEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("subcategories_pkey");
 
@@ -372,7 +373,7 @@ public partial class CSDBContext : DbContext
                 .HasConstraintName("subcategories_parent_fkey");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("users_pkey");
 
@@ -399,7 +400,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("username");
 
-            entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Users)
+            entity.HasOne(d => d.RoleEntityNavigation).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Role)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("users_role_fkey");
@@ -407,11 +408,11 @@ public partial class CSDBContext : DbContext
             entity.HasMany(d => d.CommunitiesNavigation).WithMany(p => p.Followers)
                 .UsingEntity<Dictionary<string, object>>(
                     "Follow",
-                    r => r.HasOne<Community>().WithMany()
+                    r => r.HasOne<CommunityEntity>().WithMany()
                         .HasForeignKey("Community")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("follows_community_fkey"),
-                    l => l.HasOne<User>().WithMany()
+                    l => l.HasOne<UserEntity>().WithMany()
                         .HasForeignKey("Follower")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("follows_follower_fkey"),
