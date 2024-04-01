@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConverseSpace.API", "ConverseSpace.API\ConverseSpace.API.csproj", "{0EA62A92-F204-46D6-B76A-FAE900EDE0EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConverseSpace.Data", "ConverseSpace.Data\ConverseSpace.Data.csproj", "{3A40A526-8492-4E42-8127-E788F4AB8225}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConverseSpace.Domain", "ConverseSpace.Domain\ConverseSpace.Domain.csproj", "{49EC826F-AC50-4106-AC50-BD510D84680F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConverseSpace.Application", "ConverseSpace.Application\ConverseSpace.Application.csproj", "{A32DAFCE-7606-4F5B-8996-94496F5FD248}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EA62A92-F204-46D6-B76A-FAE900EDE0EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EA62A92-F204-46D6-B76A-FAE900EDE0EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EA62A92-F204-46D6-B76A-FAE900EDE0EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EA62A92-F204-46D6-B76A-FAE900EDE0EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A40A526-8492-4E42-8127-E788F4AB8225}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A40A526-8492-4E42-8127-E788F4AB8225}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A40A526-8492-4E42-8127-E788F4AB8225}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A40A526-8492-4E42-8127-E788F4AB8225}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49EC826F-AC50-4106-AC50-BD510D84680F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49EC826F-AC50-4106-AC50-BD510D84680F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49EC826F-AC50-4106-AC50-BD510D84680F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49EC826F-AC50-4106-AC50-BD510D84680F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A32DAFCE-7606-4F5B-8996-94496F5FD248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A32DAFCE-7606-4F5B-8996-94496F5FD248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A32DAFCE-7606-4F5B-8996-94496F5FD248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A32DAFCE-7606-4F5B-8996-94496F5FD248}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
