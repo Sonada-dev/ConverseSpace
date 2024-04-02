@@ -1,33 +1,32 @@
-using ConverseSpace.Application.Services;
+using ConverseSpace.Application.Authentication.Commands.Login;
+using ConverseSpace.Application.Authentication.Commands.Register;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConverseSpace.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticationController(UsersService usersService) : ControllerBase
+public class AuthenticationController(IMediator mediator) : ControllerBase
 {
-    private readonly UsersService _usersService = usersService;
+    private readonly IMediator _mediator = mediator;
 
     [HttpPost("register")]
-    public async Task<string> Register([FromBody] RegisterResponse response)
+    public async Task<string> Register([FromBody] RegisterCommand request)
     {
-        return await _usersService.Register(response.Username, response.Email, response.Password);
+        return await _mediator.Send(request);
     }
 
     [HttpPost("login")]
-    public async Task<string> Login(string username, string password)
+    public async Task<string> Login([FromBody] LoginCommand request)
     {
-        return await _usersService.Login(username, password);
+        string token = await _mediator.Send(request);
+
+        string hex = "746F6B656E";
+        
+        HttpContext.Response.Cookies.Append(hex, token);
+
+        return token;
     }
-
-    [HttpPost("role")]
-    public async Task<string> CreateRole([FromBody] string title)
-    {
-        return await _usersService.CreateRole(title);
-    }
-
-    public record RegisterResponse(string Username, string Email, string Password);
-
-    public record LoginResponse(string Username, string Password);
 }

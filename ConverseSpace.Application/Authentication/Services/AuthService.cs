@@ -3,12 +3,12 @@ using ConverseSpace.Domain.Abstractions.Auth;
 using ConverseSpace.Domain.Abstractions.Repositories;
 using ConverseSpace.Domain.Models;
 
-namespace ConverseSpace.Application.Services;
+namespace ConverseSpace.Application.Authentication.Services;
 
-public class UsersService(
+public class AuthService(
     IPasswordHasher passwordHasher,
     IUsersRepository usersRepository,
-    IJwtProvider jwtProvider)
+    IJwtProvider jwtProvider) : IAuthService
 {
     private readonly IJwtProvider _jwtProvider = jwtProvider;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;

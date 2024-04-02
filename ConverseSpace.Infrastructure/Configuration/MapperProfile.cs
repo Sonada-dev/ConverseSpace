@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ConverseSpace.Application.Authentication.Commands.Login;
+using ConverseSpace.Application.Authentication.Commands.Register;
 using ConverseSpace.Data.Entities;
 using ConverseSpace.Domain.Models;
 
