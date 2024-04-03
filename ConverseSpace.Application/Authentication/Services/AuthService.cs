@@ -3,16 +3,18 @@ using ConverseSpace.Domain.Abstractions.Auth;
 using ConverseSpace.Domain.Abstractions.Repositories;
 using ConverseSpace.Domain.Models;
 
-namespace ConverseSpace.Application.Services;
+namespace ConverseSpace.Application.Authentication.Services;
 
-public class UsersService(
+public class AuthService(
     IPasswordHasher passwordHasher,
     IUsersRepository usersRepository,
-    IJwtProvider jwtProvider)
+    IRolesRepository rolesRepository,
+    IJwtProvider jwtProvider) : IAuthService
 {
     private readonly IJwtProvider _jwtProvider = jwtProvider;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
     private readonly IUsersRepository _usersRepository = usersRepository;
+    private readonly IRolesRepository _rolesRepository = rolesRepository;
 
     public async Task<string> Register(string username, string email, string password)
     {
@@ -55,10 +57,10 @@ public class UsersService(
         return token;
     }
 
-    public async Task<string> CreateRole(string title)
+    public async Task<string> CreateRole(string name)
     {
-        var role = new Role { Id = Guid.NewGuid(), Title = title };
-        await _usersRepository.AddRole(role);
+        var role = new Role { Name = name };
+        await _rolesRepository.Add(role);
 
         return "Роль успешно создана";
     }

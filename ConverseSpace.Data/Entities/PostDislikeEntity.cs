@@ -1,6 +1,6 @@
 ﻿namespace ConverseSpace.Data.Entities;
 
-public class PostDislike
+public class PostDislikeEntity
 {
     public Guid Id { get; set; }
 
