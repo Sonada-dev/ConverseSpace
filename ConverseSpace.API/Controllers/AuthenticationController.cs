@@ -1,3 +1,4 @@
+using ConverseSpace.Application.Authentication.Commands.CreateRole;
 using ConverseSpace.Application.Authentication.Commands.Login;
 using ConverseSpace.Application.Authentication.Commands.Register;
 using MediatR;
@@ -28,5 +29,12 @@ public class AuthenticationController(IMediator mediator) : ControllerBase
         HttpContext.Response.Cookies.Append(hex, token);
 
         return token;
+    }
+    
+    [Authorize(Policy="AdminPolicy")]
+    [HttpPost("role")]
+    public async Task<string> CreateRole([FromBody] CreateRoleCommand request)
+    {
+        return await _mediator.Send(request);
     }
 }

@@ -31,7 +31,7 @@ public partial class CSDBContext : DbContext
 
     public virtual DbSet<PostContentMedia> PostContentMedia { get; set; }
 
-    public virtual DbSet<PostDislike> PostDislikes { get; set; }
+    public virtual DbSet<PostDislikeEntity> PostDislikes { get; set; }
 
     public virtual DbSet<PostLikeEntity> PostLikes { get; set; }
 
@@ -293,7 +293,7 @@ public partial class CSDBContext : DbContext
                 .HasConstraintName("post_content_media_post_fkey");
         });
 
-        modelBuilder.Entity<PostDislike>(entity =>
+        modelBuilder.Entity<PostDislikeEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("post_dislikes_pkey");
 
@@ -346,11 +346,11 @@ public partial class CSDBContext : DbContext
             entity.ToTable("roles");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("id");
-            entity.Property(e => e.Title)
+            entity.Property(e => e.Name)
                 .HasColumnType("character varying")
-                .HasColumnName("title");
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<SubcategoryEntity>(entity =>

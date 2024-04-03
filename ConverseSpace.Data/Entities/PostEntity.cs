@@ -18,7 +18,7 @@ public class PostEntity
 
     public virtual ICollection<PostContentMedia> PostContentMedia { get; set; } = new List<PostContentMedia>();
 
-    public virtual ICollection<PostDislike> PostDislikes { get; set; } = new List<PostDislike>();
+    public virtual ICollection<PostDislikeEntity> PostDislikes { get; set; } = new List<PostDislikeEntity>();
 
     public virtual ICollection<PostLikeEntity> PostLikes { get; set; } = new List<PostLikeEntity>();
 

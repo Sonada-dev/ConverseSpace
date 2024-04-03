@@ -40,10 +40,4 @@ public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersReposi
 
         return _mapper.Map<User>(userEntity);
     }
-
-    public async Task AddRole(Role role)
-    {
-        await _context.Roles.AddAsync(_mapper.Map<RoleEntity>(role));
-        await _context.SaveChangesAsync();
-    }
 }

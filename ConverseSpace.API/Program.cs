@@ -1,6 +1,5 @@
 using ConverseSpace.API.Extensions;
 using ConverseSpace.Application;
-using ConverseSpace.Application.Authentication.Services;
 using ConverseSpace.Data;
 using ConverseSpace.Data.Repositories;
 using ConverseSpace.Domain.Abstractions.Auth;
@@ -13,14 +12,15 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+
 builder.Services.AddApiAuthentication(configuration);
-
-
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CSDBContext>(options =>
@@ -31,19 +31,13 @@ builder.Services.AddDbContext<CSDBContext>(options =>
 #region Repositories
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-
-#endregion
-
-#region Services
-
-builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 
 #endregion
 
 #region Others
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-builder.Services.AddHttpContextAccessor();
 
 #endregion
 

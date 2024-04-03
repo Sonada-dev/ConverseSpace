@@ -12,7 +12,7 @@ public class UserEntity
 
     public string PasswordHash { get; set; } = null!;
 
-    public Guid Role { get; set; }
+    public int Role { get; set; }
 
     public DateOnly CreatedAt { get; set; }
 
@@ -26,7 +26,7 @@ public class UserEntity
 
     public virtual ICollection<CommunityEntity> Communities { get; set; } = new List<CommunityEntity>();
 
-    public virtual ICollection<PostDislike> PostDislikes { get; set; } = new List<PostDislike>();
+    public virtual ICollection<PostDislikeEntity> PostDislikes { get; set; } = new List<PostDislikeEntity>();
 
     public virtual ICollection<PostLikeEntity> PostLikes { get; set; } = new List<PostLikeEntity>();
 
