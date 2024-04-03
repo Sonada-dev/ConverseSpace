@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ConverseSpace.API.Extensions;
 using ConverseSpace.Application;
 using ConverseSpace.Data;
@@ -18,13 +19,18 @@ builder.Services.AddApiAuthentication(configuration);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddDbContext<CSDBContext>(options =>
-    options.UseNpgsql(configuration.GetConnectionString("conn")));
+    options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
 
 #region Services
 

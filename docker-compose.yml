@@ -1,0 +1,30 @@
+﻿networks:
+  conversespace-dev:
+    driver: bridge
+services:
+  conversespace.api:
+    container_name: conversespace.api
+    build:
+      context: .
+      dockerfile: ConverseSpace.API/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - conversespace-dev
+    depends_on:
+      - postgres_db
+  postgres_db:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: ConverseSpace
+    ports:
+      - "5432:5432"
+    networks:
+      - conversespace-dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:

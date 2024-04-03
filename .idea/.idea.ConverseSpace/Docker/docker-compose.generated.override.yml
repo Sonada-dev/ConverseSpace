@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  conversespace.api:
+    build:
+      context: "D:\\Projects\\Rider\\ConverseSpace"
+      dockerfile: "ConverseSpace.API/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/ConverseSpace.API.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "conversespace.api:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\fel4s\\.nuget\\packages:/home/app/.nuget/packages"
+    - "D:\\Projects\\Rider\\ConverseSpace\\ConverseSpace.API:/app:rw"
+    - "D:\\Projects\\Rider\\ConverseSpace:/src:rw"
+    working_dir: "/app"

@@ -1,17 +1,21 @@
 using ConverseSpace.Application.Authentication.Commands.CreateRole;
 using ConverseSpace.Application.Authentication.Commands.Login;
 using ConverseSpace.Application.Authentication.Commands.Register;
+using ConverseSpace.Data;
+using ConverseSpace.Data.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConverseSpace.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticationController(IMediator mediator) : ControllerBase
+public class AuthenticationController(IMediator mediator, CSDBContext context) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly CSDBContext _context = context;
 
     [HttpPost("register")]
     public async Task<string> Register([FromBody] RegisterCommand request)
@@ -30,11 +34,18 @@ public class AuthenticationController(IMediator mediator) : ControllerBase
 
         return token;
     }
+
+    [HttpGet("users")]
+    public async Task<IEnumerable<UserEntity>> GetUsers()
+    {
+        return await _context.Users.ToListAsync();
+    }
     
     [Authorize(Policy="AdminPolicy")]
     [HttpPost("role")]
     public async Task<string> CreateRole([FromBody] CreateRoleCommand request)
     {
+        await _context.Roles.ToListAsync();
         return await _mediator.Send(request);
     }
 }
