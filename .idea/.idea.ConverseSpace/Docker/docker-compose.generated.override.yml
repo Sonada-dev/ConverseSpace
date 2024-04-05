@@ -2,7 +2,7 @@
 services:
   conversespace.api:
     build:
-      context: "D:\\Projects\\Rider\\ConverseSpace"
+      context: "F:\\Projects\\ConverseSpace"
       dockerfile: "ConverseSpace.API/Dockerfile"
       target: "base"
     command: []
@@ -15,7 +15,7 @@ services:
     image: "conversespace.api:dev"
     ports: []
     volumes:
-    - "C:\\Users\\fel4s\\.nuget\\packages:/home/app/.nuget/packages"
-    - "D:\\Projects\\Rider\\ConverseSpace\\ConverseSpace.API:/app:rw"
-    - "D:\\Projects\\Rider\\ConverseSpace:/src:rw"
+    - "D:\\Packages\\.nuget\\packages:/home/app/.nuget/packages"
+    - "F:\\Projects\\ConverseSpace\\ConverseSpace.API:/app:rw"
+    - "F:\\Projects\\ConverseSpace:/src:rw"
     working_dir: "/app"
