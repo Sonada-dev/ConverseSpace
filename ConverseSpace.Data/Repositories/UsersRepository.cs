@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConverseSpace.Data.Repositories;
 
-public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersRepository
+public class UsersRepository(
+    CSDBContext context, 
+    IMapper mapper) : IUsersRepository
 {
     private readonly CSDBContext _context = context;
     private readonly IMapper _mapper = mapper;
@@ -21,6 +23,7 @@ public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersReposi
     {
         var userEntity = await _context.Users
             .AsNoTracking()
+            .Include(u => u.Roles)
             .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
 
         if (userEntity is null)
@@ -33,6 +36,7 @@ public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersReposi
     {
         var userEntity = await _context.Users
             .AsNoTracking()
+            .Include(u => u.Roles)
             .FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower());
 
         if (userEntity is null)

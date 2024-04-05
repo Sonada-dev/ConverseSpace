@@ -5,4 +5,5 @@ namespace ConverseSpace.Domain.Abstractions.Repositories;
 public interface IRolesRepository
 {
     Task Add(Role role);
+    Task AddRoleForUser(Guid userId, int roleId);
 }

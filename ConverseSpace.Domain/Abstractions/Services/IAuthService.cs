@@ -1,4 +1,4 @@
-﻿namespace ConverseSpace.Application.Authentication.Services;
+﻿namespace ConverseSpace.Domain.Abstractions.Services;
 
 public interface IAuthService
 {

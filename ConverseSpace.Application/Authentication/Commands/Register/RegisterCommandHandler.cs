@@ -1,4 +1,5 @@
 ﻿using ConverseSpace.Application.Authentication.Services;
+using ConverseSpace.Domain.Abstractions.Services;
 using MediatR;
 
 namespace ConverseSpace.Application.Authentication.Commands.Register;

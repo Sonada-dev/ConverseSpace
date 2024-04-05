@@ -12,8 +12,6 @@ public class UserEntity
 
     public string PasswordHash { get; set; } = null!;
 
-    public int Role { get; set; }
-
     public DateOnly CreatedAt { get; set; }
 
     public string Avatar { get; set; } = null!;
@@ -32,7 +30,7 @@ public class UserEntity
 
     public virtual ICollection<PostEntity> Posts { get; set; } = new List<PostEntity>();
 
-    public virtual RoleEntity RoleEntityNavigation { get; set; } = null!;
+    public virtual ICollection<RoleEntity> Roles { get; set; } = new List<RoleEntity>();
 
     public virtual ICollection<CommunityEntity> CommunitiesNavigation { get; set; } = new List<CommunityEntity>();
 }

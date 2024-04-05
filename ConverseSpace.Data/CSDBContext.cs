@@ -40,6 +40,11 @@ public partial class CSDBContext : DbContext
     public virtual DbSet<SubcategoryEntity> Subcategories { get; set; }
 
     public virtual DbSet<UserEntity> Users { get; set; }
+    
+    public async Task AddUserRoleAsync(Guid userId, int roleId)
+    {
+        await Database.ExecuteSqlInterpolatedAsync($"SELECT add_user_role({userId}, {roleId})");
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -373,7 +378,7 @@ public partial class CSDBContext : DbContext
                 .HasConstraintName("subcategories_parent_fkey");
         });
 
-        modelBuilder.Entity<UserEntity>(entity =>
+         modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("users_pkey");
 
@@ -395,15 +400,9 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.PasswordHash)
                 .HasColumnType("character varying")
                 .HasColumnName("passwordHash");
-            entity.Property(e => e.Role).HasColumnName("role");
             entity.Property(e => e.Username)
                 .HasColumnType("character varying")
                 .HasColumnName("username");
-
-            entity.HasOne(d => d.RoleEntityNavigation).WithMany(p => p.Users)
-                .HasForeignKey(d => d.Role)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("users_role_fkey");
 
             entity.HasMany(d => d.CommunitiesNavigation).WithMany(p => p.Followers)
                 .UsingEntity<Dictionary<string, object>>(
@@ -422,6 +421,25 @@ public partial class CSDBContext : DbContext
                         j.ToTable("follows");
                         j.IndexerProperty<Guid>("Follower").HasColumnName("follower");
                         j.IndexerProperty<Guid>("Community").HasColumnName("community");
+                    });
+
+            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UsersRole",
+                    r => r.HasOne<RoleEntity>().WithMany()
+                        .HasForeignKey("Role")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("users_roles_roles_id_fk"),
+                    l => l.HasOne<UserEntity>().WithMany()
+                        .HasForeignKey("User")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("users_roles_users_id_fk"),
+                    j =>
+                    {
+                        j.HasKey("User", "Role").HasName("users_roles_pk");
+                        j.ToTable("users_roles");
+                        j.IndexerProperty<Guid>("User").HasColumnName("user");
+                        j.IndexerProperty<int>("Role").HasColumnName("role");
                     });
         });
 

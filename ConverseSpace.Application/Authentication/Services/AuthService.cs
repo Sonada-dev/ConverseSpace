@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using ConverseSpace.Domain.Abstractions.Auth;
 using ConverseSpace.Domain.Abstractions.Repositories;
+using ConverseSpace.Domain.Abstractions.Services;
 using ConverseSpace.Domain.Models;
 
 namespace ConverseSpace.Application.Authentication.Services;
@@ -35,7 +36,7 @@ public class AuthService(
 
     public async Task<string> Login(string username, string password)
     {
-        var pattern = @"^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$";
+        const string pattern = @"^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$";
 
         User? user;
 

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ConverseSpace.Data.Entities;
 using ConverseSpace.Domain.Abstractions.Repositories;
 using ConverseSpace.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConverseSpace.Data.Repositories;
 
@@ -9,6 +11,12 @@ public class RolesRepository(CSDBContext context, IMapper mapper) : IRolesReposi
 {
     private readonly CSDBContext _context = context;
     private readonly IMapper _mapper = mapper;
+
+    public async Task<List<Role>> Get() =>
+        await _context.Roles
+            .ProjectTo<Role>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+
     
     public async Task Add(Role role)
     {
@@ -16,5 +24,10 @@ public class RolesRepository(CSDBContext context, IMapper mapper) : IRolesReposi
 
         await _context.Roles.AddAsync(roleEntity);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task AddRoleForUser(Guid userId, int roleId)
+    {
+        await _context.AddUserRoleAsync(userId, roleId);
     }
 }

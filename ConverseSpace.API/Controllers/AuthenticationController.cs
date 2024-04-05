@@ -1,6 +1,7 @@
 using ConverseSpace.Application.Authentication.Commands.CreateRole;
 using ConverseSpace.Application.Authentication.Commands.Login;
 using ConverseSpace.Application.Authentication.Commands.Register;
+using ConverseSpace.Application.Users.Commands;
 using ConverseSpace.Data;
 using ConverseSpace.Data.Entities;
 using MediatR;
@@ -35,17 +36,26 @@ public class AuthenticationController(IMediator mediator, CSDBContext context) :
         return token;
     }
 
+    [Authorize(Policy = "UserPolicy")]
     [HttpGet("users")]
     public async Task<IEnumerable<UserEntity>> GetUsers()
     {
-        return await _context.Users.ToListAsync();
+        return await _context.Users.AsNoTracking().Include(u => u.Roles).ToListAsync();
     }
-    
+
+    [Authorize(Policy = "UsersPolicy")]
+    [HttpPost("{userId}/roles")]
+    public async Task<string> AddRoleForUser(Guid userId, [FromBody] int roleId)
+    {
+        var request = new AddRoleForUserCommand(userId, roleId);
+        return await _mediator.Send(request);
+    }
+
     [Authorize(Policy="AdminPolicy")]
-    [HttpPost("role")]
+    [HttpPost("roles")]
     public async Task<string> CreateRole([FromBody] CreateRoleCommand request)
     {
-        await _context.Roles.ToListAsync();
+        //await _context.Roles.ToListAsync();
         return await _mediator.Send(request);
     }
 }

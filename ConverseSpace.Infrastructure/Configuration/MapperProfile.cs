@@ -10,6 +10,9 @@ public class MapperProfile : Profile
     {
         CreateMap<User, UserEntity>();
         CreateMap<UserEntity, User>();
+        
         CreateMap<Role, RoleEntity>();
+        CreateMap<RoleEntity, Role>();
+        
     }
 }
