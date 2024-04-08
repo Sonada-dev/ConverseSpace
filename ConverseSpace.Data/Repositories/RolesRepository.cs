@@ -14,6 +14,7 @@ public class RolesRepository(CSDBContext context, IMapper mapper) : IRolesReposi
 
     public async Task<List<Role>> Get() =>
         await _context.Roles
+            .AsNoTracking()
             .ProjectTo<Role>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
@@ -26,8 +27,9 @@ public class RolesRepository(CSDBContext context, IMapper mapper) : IRolesReposi
         await _context.SaveChangesAsync();
     }
 
-    public async Task AddRoleForUser(Guid userId, int roleId)
+    public async Task<Role> GetById(int id)
     {
-        await _context.AddUserRoleAsync(userId, roleId);
+        RoleEntity roleEntity = (await _context.Roles.FindAsync(id))!;
+        return _mapper.Map<Role>(roleEntity);
     }
 }

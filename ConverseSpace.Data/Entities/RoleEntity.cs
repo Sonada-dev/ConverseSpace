@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class RoleEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class RoleEntity
 {
     public int Id { get; set; }
 

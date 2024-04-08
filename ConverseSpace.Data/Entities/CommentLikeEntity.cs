@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class CommentLikeEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class CommentLikeEntity
 {
     public Guid Id { get; set; }
 
@@ -8,7 +11,7 @@ public class CommentLikeEntity
 
     public Guid Comment { get; set; }
 
-    public virtual CommentEntityEntity CommentEntityEntityNavigation { get; set; } = null!;
+    public virtual CommentEntity CommentEntityNavigation { get; set; } = null!;
 
     public virtual UserEntity UserEntityNavigation { get; set; } = null!;
 }

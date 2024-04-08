@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class PostEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class PostEntity
 {
     public Guid Id { get; set; }
 
@@ -12,11 +15,11 @@ public class PostEntity
 
     public Guid CreatedBy { get; set; }
 
-    public virtual ICollection<CommentEntityEntity> Comments { get; set; } = new List<CommentEntityEntity>();
+    public virtual ICollection<CommentEntity> Comments { get; set; } = new List<CommentEntity>();
 
     public virtual UserEntity CreatedByNavigation { get; set; } = null!;
 
-    public virtual ICollection<PostContentMedia> PostContentMedia { get; set; } = new List<PostContentMedia>();
+    public virtual ICollection<PostContentMediaEntity> PostContentMedia { get; set; } = new List<PostContentMediaEntity>();
 
     public virtual ICollection<PostDislikeEntity> PostDislikes { get; set; } = new List<PostDislikeEntity>();
 

@@ -1,14 +1,13 @@
-﻿using ConverseSpace.Data.Entities.Enums;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConverseSpace.Data.Entities;
 
-public class PostContentMedia
+public partial class PostContentMediaEntity
 {
     public Guid Id { get; set; }
 
     public string Content { get; set; } = null!;
-
-    public MediaType Type { get; set; }
 
     public Guid Post { get; set; }
 

@@ -2,7 +2,7 @@
 
 public enum CommentsSettings
 {
-    closed,
-    open,
-    open_for_followers
+    CLOSED,
+    OPEN,
+    OPEN_FOR_FOLLOWERS
 }

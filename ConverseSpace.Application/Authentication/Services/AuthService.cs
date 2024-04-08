@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using AutoMapper;
+using ConverseSpace.Application.Authentication.Commands.Register;
 using ConverseSpace.Domain.Abstractions.Auth;
 using ConverseSpace.Domain.Abstractions.Repositories;
 using ConverseSpace.Domain.Abstractions.Services;
@@ -10,24 +12,26 @@ public class AuthService(
     IPasswordHasher passwordHasher,
     IUsersRepository usersRepository,
     IRolesRepository rolesRepository,
-    IJwtProvider jwtProvider) : IAuthService
+    IJwtProvider jwtProvider,
+    IMapper mapper) : IAuthService
 {
     private readonly IJwtProvider _jwtProvider = jwtProvider;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
     private readonly IUsersRepository _usersRepository = usersRepository;
     private readonly IRolesRepository _rolesRepository = rolesRepository;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<string> Register(string username, string email, string password)
     {
+        
+        if (!await сheckUsernameUniqueness(username))
+            return "Пользователь с таким никнеймом уже существует";
+
+        
         var hashedPassword = _passwordHasher.Generate(password);
 
-        var user = new User
-        {
-            Id = Guid.NewGuid(),
-            Username = username,
-            Email = email,
-            PasswordHash = hashedPassword
-        };
+        var user = new User(username, email, hashedPassword);
+        
 
         await _usersRepository.Add(user);
 
@@ -41,9 +45,9 @@ public class AuthService(
         User? user;
 
         if (Regex.IsMatch(username, pattern))
-            user = await _usersRepository.GetUserByEmail(username);
+            user = await _usersRepository.GetByEmail(username);
         else
-            user = await _usersRepository.GetUserByUsername(username);
+            user = await _usersRepository.GetByUsername(username);
 
         if (user is null)
             return "Пользователь не найден.";
@@ -64,5 +68,11 @@ public class AuthService(
         await _rolesRepository.Add(role);
 
         return "Роль успешно создана";
+    }
+
+    private async Task<bool> сheckUsernameUniqueness(string username)
+    {
+        var user = await _usersRepository.GetByUsername(username);
+        return user is null;
     }
 }

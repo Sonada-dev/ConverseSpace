@@ -44,21 +44,6 @@ public static class ApiExtension
                 };
             });
 
-        services.AddAuthorizationBuilder()
-            .AddPolicy("UserPolicy", policy =>
-            {
-                //policy.RequireClaim(ClaimTypes.Role, "3");
-                policy.RequireRole("Пользователь");
-            })
-            .AddPolicy("ModerPolicy", policy =>
-            {
-                //policy.RequireClaim(ClaimTypes.Role, "2");
-                policy.RequireRole("Модератор", "Пользователь");
-            })
-            .AddPolicy("AdminPolicy", policy =>
-            {
-                //policy.RequireClaim(ClaimTypes.Role,"1");
-                policy.RequireRole("Администратор", "Модератор", "Пользователь");
-            });
+        services.AddAuthorization();
     }
 }

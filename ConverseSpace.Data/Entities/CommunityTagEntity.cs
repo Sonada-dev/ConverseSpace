@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class CommunityTagEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class CommunityTagEntity
 {
     public Guid Id { get; set; }
 

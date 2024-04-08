@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class CommunityEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class CommunityEntity
 {
     public Guid Id { get; set; }
 
@@ -21,4 +24,6 @@ public class CommunityEntity
     public virtual UserEntity CreatedByNavigation { get; set; } = null!;
 
     public virtual ICollection<UserEntity> Followers { get; set; } = new List<UserEntity>();
+
+    public virtual ICollection<UserEntity> Users { get; set; } = new List<UserEntity>();
 }
