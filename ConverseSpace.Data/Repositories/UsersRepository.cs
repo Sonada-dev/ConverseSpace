@@ -19,11 +19,18 @@ public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersReposi
             .ProjectTo<User>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public async Task<User> GetById(Guid id) =>
+    public async Task<User> GetByIdFull(Guid id) =>
         _mapper.Map<User>(await _context.Users
+            .AsNoTracking()
             .Include(u => u.Communities)
             .FirstOrDefaultAsync(u => u.Id == id));
 
+    public async Task<User> GetById(Guid id) =>
+        _mapper.Map<User>(await _context.Users
+            .AsNoTracking()
+            .Include(u => u.Communities)
+            .FirstOrDefaultAsync(u => u.Id == id));
+    
     public async Task Add(User user)
     {
         await _context.Users.AddAsync(_mapper.Map<UserEntity>(user));

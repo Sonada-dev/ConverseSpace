@@ -1,38 +1,44 @@
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Services;
+using ConverseSpace.Domain.Errors;
 using ConverseSpace.Domain.Models;
 using ConverseSpace.Domain.Models.Enums;
 using MediatR;
 
 namespace ConverseSpace.Application.Communities.Commands.CreateCommunity;
 
-public record CreateCommunityRequest : IRequest<CreateCommunityResponse>
+public record CreateCommunityRequest : IRequest<Result>
 {
+    [Required]
+    [StringLength(50, MinimumLength = 3)]
     public required string Title { get; init; }
+    [StringLength(512)]
     public string? Description { get; init; }
     public DateOnly CreatedAt { get; init; }
     public required Guid CreatedBy { get; init; }
     public bool IsPrivate { get; init; }
     public bool CheckPosts { get; init; }
+    [EnumDataType(typeof(CommentsSettings))]
     public CommentsSettings Comments { get; init; }
 }
 
-public class CreateCommunityHandler(ICommunitiesService communitiesService, IUsersService usersService, IMapper mapper) : IRequestHandler<CreateCommunityRequest, CreateCommunityResponse>
+public class CreateCommunityHandler(ICommunitiesService communitiesService, IUsersService usersService, IMapper mapper) : IRequestHandler<CreateCommunityRequest, Result>
 {
     private readonly ICommunitiesService _communitiesService = communitiesService;
     private readonly IUsersService _usersService = usersService;
     private readonly IMapper _mapper = mapper;
     
-    public async Task<CreateCommunityResponse> Handle(CreateCommunityRequest request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateCommunityRequest request, CancellationToken cancellationToken)
     {
         var user = await _usersService.GetUserById(request.CreatedBy);
         if (user.Role == 2 && user.Communities.Count == 3)
-            return new CreateCommunityResponse("Обычному пользователю можно создать лишь 3 сообщества", 403);
+            return Result.Failure(CommunitiesErrors.CommunityLimit);
         
         var community = _mapper.Map<Community>(request);
-        return new CreateCommunityResponse(await _communitiesService.CreateCommunity(community)) ;
+        return await _communitiesService.CreateCommunity(community);
     }
 }
-public record CreateCommunityResponse(string Status, int? StatusCode = null);
 
 

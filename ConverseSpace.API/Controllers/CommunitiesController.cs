@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using ConverseSpace.Application;
 using ConverseSpace.Application.Communities.Commands.CreateCommunity;
 using ConverseSpace.Application.Communities.Commands.DeleteCommunity;
 using ConverseSpace.Application.Communities.Queries.GetCommunities;
@@ -19,11 +17,11 @@ namespace ConverseSpace.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCommunities()
         {
-            var communitites = await _mediator.Send(new GetCommunitiesRequest());
-            if (communitites.Count == 0)
+            var communities = await _mediator.Send(new GetCommunitiesRequest());
+            if (communities.Count == 0)
                 return NoContent();
                 
-            return Ok(communitites);
+            return Ok(communities);
         }
 
         [Authorize(Roles = "1, 2, 3")]
@@ -31,14 +29,10 @@ namespace ConverseSpace.API.Controllers
         public async Task<IActionResult> CreateCommunity([FromBody] CreateCommunityRequest request)
         {
             var result = await _mediator.Send(request);
-            
-            if (result.StatusCode == 403)
-                return StatusCode(403, result.Status);
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
 
-            if(HandleException.CheckHandleException(result.Status))
-                return Ok(result);
-
-            return StatusCode(500, result);
+            return StatusCode(201, "Сообщество создано");
         }
 
         [Authorize(Roles = "1, 2")]
@@ -46,10 +40,10 @@ namespace ConverseSpace.API.Controllers
         public async Task<IActionResult> DeleteCommunity(Guid id)
         {
             var result = await _mediator.Send(new DeleteCommunityRequest(id));
-            if(HandleException.CheckHandleException(result))
-                return Ok(result);
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
 
-            return StatusCode(500);
+            return StatusCode(204, "Сообщество удалено");
         }
     }
 }

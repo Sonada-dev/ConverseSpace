@@ -1,3 +1,4 @@
+using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Repositories;
 using ConverseSpace.Domain.Abstractions.Services;
 using ConverseSpace.Domain.Models;
@@ -11,9 +12,22 @@ public class CommunitiesService(ICommunitiesRepository communitiesRepository) : 
     public async Task<List<Community>> GetCommunities() =>
         await _communitiesRepository.Get();
 
-    public async Task<string> CreateCommunity(Community community) =>
-        await HandleException.HandleExceptionAsync(async () => await _communitiesRepository.Add(community));
-    
-    public async Task<string> DeleteCommunity(Guid id) =>
-        await HandleException.HandleExceptionAsync(async () => await _communitiesRepository.Delete(id));
+    public async Task<Result> CreateCommunity(Community community)
+    {
+        try
+        {
+            await _communitiesRepository.Add(community);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error(500, ex.Message));
+        }
+    }
+
+    public async Task<Result> DeleteCommunity(Guid id)
+    {
+        await _communitiesRepository.Delete(id);
+        return Result.Success();
+    }
 }

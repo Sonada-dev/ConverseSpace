@@ -38,6 +38,12 @@ public partial class CSDBContext : DbContext
 
     public virtual DbSet<UserEntity> Users { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+        // Другие настройки
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder

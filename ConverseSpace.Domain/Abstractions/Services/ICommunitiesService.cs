@@ -5,6 +5,6 @@ namespace ConverseSpace.Domain.Abstractions.Services;
 public interface ICommunitiesService
 {
     Task<List<Community>> GetCommunities();
-    Task<string> CreateCommunity(Community community);
-    Task<string> DeleteCommunity(Guid id);
+    Task<Result> CreateCommunity(Community community);
+    Task<Result> DeleteCommunity(Guid id);
 }
