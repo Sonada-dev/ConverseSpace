@@ -1,9 +1,9 @@
 ﻿namespace ConverseSpace.Data.Entities.Enums;
 
-public enum StatusPost : byte
+public enum StatusPost
 {
-    published,
-    suggested,
-    rejected,
-    deleted
+    PUBLISHED,
+    SUGGESTED,
+    REJECTED,
+    DELETED
 }

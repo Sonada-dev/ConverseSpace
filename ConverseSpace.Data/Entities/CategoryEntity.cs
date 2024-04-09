@@ -1,7 +1,9 @@
-﻿// ReSharper disable All
+﻿using System;
+using System.Collections.Generic;
+
 namespace ConverseSpace.Data.Entities;
 
-public class CategoryEntity
+public partial class CategoryEntity
 {
     public Guid Id { get; set; }
 

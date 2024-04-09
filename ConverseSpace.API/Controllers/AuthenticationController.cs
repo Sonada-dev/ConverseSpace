@@ -14,10 +14,8 @@ public class AuthenticationController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpPost("register")]
-    public async Task<string> Register([FromBody] RegisterCommand request)
-    {
-        return await _mediator.Send(request);
-    }
+    public async Task<string> Register([FromBody] RegisterCommand request) => 
+        await _mediator.Send(request);
 
     [HttpPost("login")]
     public async Task<string> Login([FromBody] LoginCommand request)
@@ -30,11 +28,9 @@ public class AuthenticationController(IMediator mediator) : ControllerBase
 
         return token;
     }
-    
-    [Authorize(Policy="AdminPolicy")]
-    [HttpPost("role")]
-    public async Task<string> CreateRole([FromBody] CreateRoleCommand request)
-    {
-        return await _mediator.Send(request);
-    }
+
+    [Authorize(Roles = "1")]
+    [HttpPost("roles")]
+    public async Task<string> CreateRole([FromBody] CreateRoleCommand request) => 
+        await _mediator.Send(request);
 }

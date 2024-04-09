@@ -1,13 +1,17 @@
+using System.Text.Json.Serialization;
 using ConverseSpace.API.Extensions;
 using ConverseSpace.Application;
 using ConverseSpace.Data;
+using ConverseSpace.Data.Entities;
 using ConverseSpace.Data.Repositories;
 using ConverseSpace.Domain.Abstractions.Auth;
 using ConverseSpace.Domain.Abstractions.Repositories;
+using ConverseSpace.Domain.Models.Enums;
 using ConverseSpace.Infrastructure.Authentication;
 using ConverseSpace.Infrastructure.Configuration;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -18,13 +22,25 @@ builder.Services.AddApiAuthentication(configuration);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapEnum<CommentsSettings>();
+#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapComposite<CommunityEntity>();
+#pragma warning restore CS0618 // Type or member is obsolete
+
 builder.Services.AddDbContext<CSDBContext>(options =>
-    options.UseNpgsql(configuration.GetConnectionString("conn")));
+    options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
 
 #region Services
 
@@ -32,6 +48,7 @@ builder.Services.AddDbContext<CSDBContext>(options =>
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
+builder.Services.AddScoped<ICommunitiesRepository, CommunitiesRepository>();
 
 #endregion
 

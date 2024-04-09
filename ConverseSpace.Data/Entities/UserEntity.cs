@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class UserEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class UserEntity
 {
     public Guid Id { get; set; }
 
@@ -12,17 +15,17 @@ public class UserEntity
 
     public string PasswordHash { get; set; } = null!;
 
-    public int Role { get; set; }
-
     public DateOnly CreatedAt { get; set; }
 
     public string Avatar { get; set; } = null!;
+
+    public int Role { get; set; }
 
     public virtual ICollection<CommentDislikeEntity> CommentDislikes { get; set; } = new List<CommentDislikeEntity>();
 
     public virtual ICollection<CommentLikeEntity> CommentLikes { get; set; } = new List<CommentLikeEntity>();
 
-    public virtual ICollection<CommentEntityEntity> Comments { get; set; } = new List<CommentEntityEntity>();
+    public virtual ICollection<CommentEntity> Comments { get; set; } = new List<CommentEntity>();
 
     public virtual ICollection<CommunityEntity> Communities { get; set; } = new List<CommunityEntity>();
 
@@ -33,6 +36,8 @@ public class UserEntity
     public virtual ICollection<PostEntity> Posts { get; set; } = new List<PostEntity>();
 
     public virtual RoleEntity RoleEntityNavigation { get; set; } = null!;
+
+    public virtual ICollection<CommunityEntity> Communities1 { get; set; } = new List<CommunityEntity>();
 
     public virtual ICollection<CommunityEntity> CommunitiesNavigation { get; set; } = new List<CommunityEntity>();
 }

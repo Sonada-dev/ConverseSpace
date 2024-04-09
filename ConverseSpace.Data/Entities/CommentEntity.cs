@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class CommentEntityEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class CommentEntity
 {
     public Guid Id { get; set; }
 
@@ -12,8 +15,7 @@ public class CommentEntityEntity
 
     public Guid CreatedBy { get; set; }
 
-    public virtual ICollection<CommentContentMediaEntity> CommentContentMedia { get; set; } =
-        new List<CommentContentMediaEntity>();
+    public virtual ICollection<CommentContentMediaEntity> CommentContentMedia { get; set; } = new List<CommentContentMediaEntity>();
 
     public virtual ICollection<CommentDislikeEntity> CommentDislikes { get; set; } = new List<CommentDislikeEntity>();
 

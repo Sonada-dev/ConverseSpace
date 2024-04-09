@@ -2,8 +2,8 @@
 
 public enum MediaType
 {
-    img,
-    video,
-    audio,
-    gif
+    IMAGE,
+    VIDEO,
+    AUDIO,
+    GIF
 }

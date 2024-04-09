@@ -1,21 +1,18 @@
 ﻿using ConverseSpace.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-// ReSharper disable All
 
 namespace ConverseSpace.Data;
 
 public partial class CSDBContext : DbContext
 {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public CSDBContext(DbContextOptions<CSDBContext> options)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         : base(options)
     {
     }
 
     public virtual DbSet<CategoryEntity> Categories { get; set; }
 
-    public virtual DbSet<CommentEntityEntity> Comments { get; set; }
+    public virtual DbSet<CommentEntity> Comments { get; set; }
 
     public virtual DbSet<CommentContentMediaEntity> CommentContentMedia { get; set; }
 
@@ -29,7 +26,7 @@ public partial class CSDBContext : DbContext
 
     public virtual DbSet<PostEntity> Posts { get; set; }
 
-    public virtual DbSet<PostContentMedia> PostContentMedia { get; set; }
+    public virtual DbSet<PostContentMediaEntity> PostContentMedia { get; set; }
 
     public virtual DbSet<PostDislikeEntity> PostDislikes { get; set; }
 
@@ -62,7 +59,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnName("title");
         });
 
-        modelBuilder.Entity<CommentEntityEntity>(entity =>
+        modelBuilder.Entity<CommentEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("comments_pkey");
 
@@ -104,7 +101,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("content");
 
-            entity.HasOne(d => d.CommentEntityEntityNavigation).WithMany(p => p.CommentContentMedia)
+            entity.HasOne(d => d.CommentEntityNavigation).WithMany(p => p.CommentContentMedia)
                 .HasForeignKey(d => d.Comment)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_content_media_comment_fkey");
@@ -122,7 +119,7 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.User).HasColumnName("user");
 
-            entity.HasOne(d => d.CommentEntityEntityNavigation).WithMany(p => p.CommentDislikes)
+            entity.HasOne(d => d.CommentEntityNavigation).WithMany(p => p.CommentDislikes)
                 .HasForeignKey(d => d.Comment)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_dislikes_comment_fkey");
@@ -145,7 +142,7 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.User).HasColumnName("user");
 
-            entity.HasOne(d => d.CommentEntityEntityNavigation).WithMany(p => p.CommentLikes)
+            entity.HasOne(d => d.CommentEntityNavigation).WithMany(p => p.CommentLikes)
                 .HasForeignKey(d => d.Comment)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("comment_likes_comment_fkey");
@@ -168,7 +165,9 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.CheckPosts)
                 .HasDefaultValue(false)
                 .HasColumnName("check_posts");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_DATE")
+                .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.Description)
                 .HasColumnType("character varying")
@@ -273,7 +272,7 @@ public partial class CSDBContext : DbContext
                     });
         });
 
-        modelBuilder.Entity<PostContentMedia>(entity =>
+        modelBuilder.Entity<PostContentMediaEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("post_content_media_pkey");
 
@@ -346,7 +345,7 @@ public partial class CSDBContext : DbContext
             entity.ToTable("roles");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
+                .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.Name)
                 .HasColumnType("character varying")
@@ -395,7 +394,9 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.PasswordHash)
                 .HasColumnType("character varying")
                 .HasColumnName("passwordHash");
-            entity.Property(e => e.Role).HasColumnName("role");
+            entity.Property(e => e.Role)
+                .HasDefaultValue(3)
+                .HasColumnName("role");
             entity.Property(e => e.Username)
                 .HasColumnType("character varying")
                 .HasColumnName("username");
@@ -403,7 +404,26 @@ public partial class CSDBContext : DbContext
             entity.HasOne(d => d.RoleEntityNavigation).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Role)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("users_role_fkey");
+                .HasConstraintName("users_roles_id_fk");
+
+            entity.HasMany(d => d.Communities1).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "Moderator",
+                    r => r.HasOne<CommunityEntity>().WithMany()
+                        .HasForeignKey("Community")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("moderators_communities_id_fk"),
+                    l => l.HasOne<UserEntity>().WithMany()
+                        .HasForeignKey("User")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("moderators_users_id_fk"),
+                    j =>
+                    {
+                        j.HasKey("User", "Community").HasName("moderators_pk");
+                        j.ToTable("moderators");
+                        j.IndexerProperty<Guid>("User").HasColumnName("user");
+                        j.IndexerProperty<Guid>("Community").HasColumnName("community");
+                    });
 
             entity.HasMany(d => d.CommunitiesNavigation).WithMany(p => p.Followers)
                 .UsingEntity<Dictionary<string, object>>(

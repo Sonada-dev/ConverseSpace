@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using System.Text;
+﻿using System.Text;
 using ConverseSpace.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -45,20 +44,6 @@ public static class ApiExtension
                 };
             });
 
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("UserPolicy", policy =>
-            {
-                policy.RequireClaim(ClaimTypes.Role, "2");
-            });
-            options.AddPolicy("ModerPolicy", policy =>
-            {
-                policy.RequireClaim(ClaimTypes.Role, "1");
-            });
-            options.AddPolicy("AdminPolicy", policy =>
-            {
-                policy.RequireClaim(ClaimTypes.Role,"0");
-            });
-        });
+        services.AddAuthorization();
     }
 }

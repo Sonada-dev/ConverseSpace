@@ -1,6 +1,9 @@
-﻿namespace ConverseSpace.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
 
-public class PostLikeEntity
+namespace ConverseSpace.Data.Entities;
+
+public partial class PostLikeEntity
 {
     public Guid Id { get; set; }
 

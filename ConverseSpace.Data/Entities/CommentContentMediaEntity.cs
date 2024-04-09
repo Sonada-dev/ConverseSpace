@@ -1,17 +1,15 @@
-﻿using ConverseSpace.Data.Entities.Enums;
-// ReSharper disable All
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConverseSpace.Data.Entities;
 
-public class CommentContentMediaEntity
+public partial class CommentContentMediaEntity
 {
     public Guid Id { get; set; }
 
     public string Content { get; set; } = null!;
 
-    public MediaType Type { get; set; }
-
     public Guid Comment { get; set; }
 
-    public virtual CommentEntityEntity CommentEntityEntityNavigation { get; set; } = null!;
+    public virtual CommentEntity CommentEntityNavigation { get; set; } = null!;
 }
