@@ -1,5 +1,6 @@
 using ConverseSpace.Application.Communities.Commands.CreateCommunity;
 using ConverseSpace.Application.Communities.Commands.DeleteCommunity;
+using ConverseSpace.Application.Communities.Commands.UpdateCommunity;
 using ConverseSpace.Application.Communities.Queries.GetCommunities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +45,18 @@ namespace ConverseSpace.API.Controllers
                 return StatusCode((int)result.Error.Code!, result.Error.Description);
 
             return StatusCode(204, "Сообщество удалено");
+        }
+        
+        [Authorize(Roles = "1, 2")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCommunity(Guid id, [FromBody] UpdateCommunityRequest request)
+        {
+            request.Id = id;
+            var result = await _mediator.Send(request);
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
+
+            return StatusCode(200, "Сообщество обновлено");
         }
     }
 }

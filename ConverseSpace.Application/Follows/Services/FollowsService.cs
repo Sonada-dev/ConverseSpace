@@ -12,6 +12,14 @@ public class FollowsService(ICommunitiesRepository communitiesRepository, IUsers
     private readonly ICommunitiesRepository _communitiesRepository = communitiesRepository;
     private readonly IUsersRepository _usersRepository = usersRepository;
 
+    public async Task<List<User>> Followers(Guid communityId)
+    {
+        var community = await _communitiesRepository.GetByIdFull(communityId);
+        var followers = community.Followers.ToList();
+        
+        return followers;
+    }
+    
     public async Task<Result> Follow(Guid userId, Guid communityId)
     {
         var user = await _usersRepository.GetByIdFull(userId);
@@ -59,12 +67,5 @@ public class FollowsService(ICommunitiesRepository communitiesRepository, IUsers
         await _communitiesRepository.Unfollow(communityId, userId);
         return Result.Success();
     }
-
-    public async Task<List<User>> Followers(Guid communityId)
-    {
-        var community = await _communitiesRepository.GetByIdFull(communityId);
-        var followers = community.Followers.ToList();
-        
-        return followers;
-    }
+    
 }

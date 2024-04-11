@@ -1,6 +1,7 @@
 using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Repositories;
 using ConverseSpace.Domain.Abstractions.Services;
+using ConverseSpace.Domain.Errors;
 using ConverseSpace.Domain.Models;
 
 namespace ConverseSpace.Application.Communities.Services;
@@ -28,6 +29,22 @@ public class CommunitiesService(ICommunitiesRepository communitiesRepository) : 
     public async Task<Result> DeleteCommunity(Guid id)
     {
         await _communitiesRepository.Delete(id);
+        return Result.Success();
+    }
+
+    public async Task<Result> UpdateCommunity(Community newCommunity)
+    {
+        var community = await _communitiesRepository.GetById(newCommunity.Id);
+
+        if (community is null)
+            return Result.Failure(CommunitiesErrors.CommunityNotFound);
+
+        community.UpdateTitle(newCommunity.Title);
+        community.UpdateDescription(newCommunity.Description);
+        community.UpdatePrivate(newCommunity.Private);
+        community.UpdateCommentsSettings(newCommunity.Comments);
+        
+        await _communitiesRepository.Update(community);
         return Result.Success();
     }
 }
