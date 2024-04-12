@@ -18,13 +18,16 @@ public class CommunitiesRepository(CSDBContext context, IMapper mapper) : ICommu
     public async Task<List<Community>> Get() =>
         await _context.Communities
             .AsNoTracking()
+            .Include(c => c.Followers)
+            .Where(c => c.IsDeleted != true)
             .ProjectTo<Community>(_mapper.ConfigurationProvider)
             .ToListAsync();
-    
+
     public async Task<Community> GetByIdFull(Guid id)
     {
         var communityEntity = await _context.Communities
             .AsNoTracking()
+            .Where(c => c.IsDeleted != true)
             .Include(c => c.Followers)
             .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -35,6 +38,7 @@ public class CommunitiesRepository(CSDBContext context, IMapper mapper) : ICommu
     {
         var communityEntity = await _context.Communities
             .AsNoTracking()
+            .Where(c => c.IsDeleted != true)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         return _mapper.Map<Community>(communityEntity);
@@ -46,22 +50,6 @@ public class CommunitiesRepository(CSDBContext context, IMapper mapper) : ICommu
         await _context.Communities.AddAsync(communityEntity);
         await _context.SaveChangesAsync();
     }
-
-    public async Task<Result> Delete(Guid id)
-    {
-        var communityEntity = await _context.Communities
-            .Include(c => c.Followers)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        if (communityEntity == null)
-            return Result.Failure(CommunitiesErrors.CommunityNotFound);
-
-        _context.Communities.Remove(communityEntity);
-        await _context.SaveChangesAsync();
-        
-        return Result.Success();
-    }
-
 
     public async Task Update(Community community)
     {

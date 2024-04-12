@@ -2,16 +2,16 @@ using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Services;
 using MediatR;
 
-namespace ConverseSpace.Application.Follows.Commands.Unfollow;
+namespace ConverseSpace.Application.Communities.Follows.Commands.Unfollow;
 
-public record UnfollowComamnd(Guid UserId, Guid ComamndId) : IRequest<Result>;
+public record UnfollowCommand(Guid UserId, Guid CommunityId) : IRequest<Result>;
 
-public class UnfollowCommandHandler(IFollowsService followsService) : IRequestHandler<UnfollowComamnd, Result>
+public class UnfollowCommandHandler(IFollowsService followsService) : IRequestHandler<UnfollowCommand, Result>
 {
     private readonly IFollowsService _followsService = followsService;
     
-    public async Task<Result> Handle(UnfollowComamnd request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UnfollowCommand request, CancellationToken cancellationToken)
     {
-        return await _followsService.Unfollow(request.UserId, request.ComamndId);
+        return await _followsService.Unfollow(request.UserId, request.CommunityId);
     }
 }

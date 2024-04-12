@@ -13,6 +13,8 @@ public class MapperProfile : Profile
     {
         CreateMap<User, UserEntity>();
         CreateMap<UserEntity, User>();
+        CreateMap<User, Follower>();
+        
         
         CreateMap<Role, RoleEntity>();
         CreateMap<RoleEntity, Role>();
@@ -22,5 +24,8 @@ public class MapperProfile : Profile
         CreateMap<Community, GetCommunityResponse>();
         CreateMap<CreateCommunityRequest, Community>();
         CreateMap<UpdateCommunityRequest, Community>();
+
+        CreateMap<JoinRequest, JoinRequestEntity>();
+        CreateMap<JoinRequestEntity, JoinRequest>();
     }
 }

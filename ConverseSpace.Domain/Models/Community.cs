@@ -5,17 +5,14 @@ namespace ConverseSpace.Domain.Models;
 
 public class Community
 {
-    public Community()
-    {
-        
-    }
+    public Community() { }
     
     public Community(string title,
         string? description,
         Guid createdBy,
         bool isPrivate = false,
         bool checkPosts = false,
-        CommentsSettings commentsSettings = CommentsSettings.open)
+        CommentsSettings commentsSettings = CommentsSettings.Open)
     {
         Title = title;
         Description = description;
@@ -32,9 +29,12 @@ public class Community
     public Guid CreatedBy { get; private set; }
     public bool Private { get; private set; }
     public bool CheckPosts { get; private set; }
+    public bool IsDeleted { get; set; }
     public CommentsSettings Comments { get; private set; }
     public ICollection<CommunityTag> Tags { get; private set; } = new List<CommunityTag>();
     public ICollection<User> Followers { get; private set; } = new List<User>();
+    public ICollection<JoinRequest> JoinRequests { get; set; } = new List<JoinRequest>();
+
     
     
     public void UpdateTitle(string newTitle)
@@ -93,5 +93,10 @@ public class Community
     public void UpdatePrivate(bool isPrivate)
     {
         Private = isPrivate;
+    }
+    
+    public void Delete(bool isDeleted)
+    {
+        IsDeleted = isDeleted;
     }
 }

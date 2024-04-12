@@ -3,15 +3,15 @@ using ConverseSpace.Domain.Abstractions.Services;
 using ConverseSpace.Domain.Models;
 using MediatR;
 
-namespace ConverseSpace.Application.Follows.Queries.Followers;
+namespace ConverseSpace.Application.Communities.Follows.Queries.Followers;
 
-public record FollowersRequest(Guid CommunityId) : IRequest<List<User>>;
+public record FollowersRequest(Guid CommunityId) : IRequest<Result<List<User>>>;
 
-public class FollowersHandler(IFollowsService followsService) : IRequestHandler<FollowersRequest,List<User>>
+public class FollowersHandler(IFollowsService followsService) : IRequestHandler<FollowersRequest,Result<List<User>>>
 {
     private readonly IFollowsService _followsService = followsService;
     
-    public async Task<List<User>> Handle(FollowersRequest request, CancellationToken cancellationToken)
+    public async Task<Result<List<User>>> Handle(FollowersRequest request, CancellationToken cancellationToken)
     {
         return await _followsService.Followers(request.CommunityId);
     }

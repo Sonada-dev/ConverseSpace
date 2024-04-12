@@ -18,6 +18,7 @@ public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersReposi
             .Include(u => u.Communities)
             .ProjectTo<User>(_mapper.ConfigurationProvider)
             .ToListAsync();
+    
 
     public async Task<User> GetByIdFull(Guid id) =>
         _mapper.Map<User>(await _context.Users
@@ -28,7 +29,6 @@ public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersReposi
     public async Task<User> GetById(Guid id) =>
         _mapper.Map<User>(await _context.Users
             .AsNoTracking()
-            .Include(u => u.Communities)
             .FirstOrDefaultAsync(u => u.Id == id));
     
     public async Task Add(User user)

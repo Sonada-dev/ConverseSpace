@@ -1,7 +1,14 @@
+using System.Security.Claims;
 using ConverseSpace.Application.Communities.Commands.CreateCommunity;
 using ConverseSpace.Application.Communities.Commands.DeleteCommunity;
 using ConverseSpace.Application.Communities.Commands.UpdateCommunity;
+using ConverseSpace.Application.Communities.Follows.Commands.Follow;
+using ConverseSpace.Application.Communities.Follows.Commands.Unfollow;
+using ConverseSpace.Application.Communities.Follows.Queries.Followers;
+using ConverseSpace.Application.Communities.Follows.Queries.JoinRequests;
 using ConverseSpace.Application.Communities.Queries.GetCommunities;
+using ConverseSpace.Application.Follows.Commands.AproveRequest;
+using ConverseSpace.Application.Follows.Commands.RejectRequest;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +28,7 @@ namespace ConverseSpace.API.Controllers
             var communities = await _mediator.Send(new GetCommunitiesRequest());
             if (communities.Count == 0)
                 return NoContent();
-                
+
             return Ok(communities);
         }
 
@@ -44,9 +51,9 @@ namespace ConverseSpace.API.Controllers
             if (result.IsFailure)
                 return StatusCode((int)result.Error.Code!, result.Error.Description);
 
-            return StatusCode(204, "Сообщество удалено");
+            return NoContent();
         }
-        
+
         [Authorize(Roles = "1, 2")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCommunity(Guid id, [FromBody] UpdateCommunityRequest request)
@@ -57,6 +64,82 @@ namespace ConverseSpace.API.Controllers
                 return StatusCode((int)result.Error.Code!, result.Error.Description);
 
             return StatusCode(200, "Сообщество обновлено");
+        }
+
+        [Authorize(Roles = "1, 2, 3")]
+        [HttpGet("{communityId}/followers")]
+        public async Task<IActionResult> Followers(Guid communityId)
+        {
+            var result = await _mediator.Send(new FollowersRequest(communityId));
+
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
+
+            if (result.Value.Count == 0)
+                return NoContent();
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "1, 2, 3")]
+        [HttpPost("{communityId}/follow")]
+        public async Task<IActionResult> Follow(Guid communityId)
+        {
+            var userId =
+                Guid.Parse(User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)!.Value);
+
+            var result = await _mediator.Send(new FollowCommand(userId, communityId));
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
+
+            return StatusCode(201, "Успешная подписка на сообщество");
+        }
+
+        [Authorize(Roles = "1, 2, 3")]
+        [HttpDelete("{communityId}/unfollow")]
+        public async Task<IActionResult> Unfollow(Guid communityId)
+        {
+            var userId =
+                Guid.Parse(User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)!.Value);
+
+            var result = await _mediator.Send(new UnfollowCommand(userId, communityId));
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
+
+            return StatusCode(200, "Успешная отписка от сообщества");
+        }
+
+        [Authorize(Roles = "1, 2")]
+        [HttpGet("{communityId}/join-requests")]
+        public async Task<IActionResult> Requests(Guid communityId)
+        {
+            var result = await _mediator.Send(new JoinRequestsQuery(communityId));
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
+
+            return Ok(result.Value);
+        }
+
+        [Authorize(Roles = "1, 2")]
+        [HttpPatch("join-requests/{requestId}/approve")]
+        public async Task<IActionResult> ApproveRequest(Guid requestId)
+        {
+            var result = await _mediator.Send(new AproveRequestQuery(requestId));
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "1, 2")]
+        [HttpPatch("join-requests/{requestId}/reject")]
+        public async Task<IActionResult> RejectRequest(Guid requestId)
+        {
+            var result = await _mediator.Send(new RejectRequestQuery(requestId));
+            if (result.IsFailure)
+                return StatusCode((int)result.Error.Code!, result.Error.Description);
+
+            return Ok();
         }
     }
 }

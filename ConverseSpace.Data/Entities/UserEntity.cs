@@ -40,4 +40,6 @@ public partial class UserEntity
     public virtual ICollection<CommunityEntity> Communities1 { get; set; } = new List<CommunityEntity>();
 
     public virtual ICollection<CommunityEntity> CommunitiesNavigation { get; set; } = new List<CommunityEntity>();
+    
+    public virtual ICollection<JoinRequestEntity> JoinRequests { get; set; } = new List<JoinRequestEntity>();
 }

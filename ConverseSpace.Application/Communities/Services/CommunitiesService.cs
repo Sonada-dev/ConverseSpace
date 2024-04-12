@@ -28,7 +28,14 @@ public class CommunitiesService(ICommunitiesRepository communitiesRepository) : 
 
     public async Task<Result> DeleteCommunity(Guid id)
     {
-        await _communitiesRepository.Delete(id);
+        var community = await _communitiesRepository.GetById(id);
+
+        if (community is null)
+            return Result.Failure(CommunitiesErrors.CommunityNotFound);
+        
+        community.Delete(true);
+         
+        await _communitiesRepository.Update(community);
         return Result.Success();
     }
 

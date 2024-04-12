@@ -20,6 +20,8 @@ public partial class CSDBContext : DbContext
 
     public virtual DbSet<CommentLikeEntity> CommentLikes { get; set; }
 
+    public virtual DbSet<JoinRequestEntity> JoinRequests { get; set; }
+    
     public virtual DbSet<CommunityEntity> Communities { get; set; }
 
     public virtual DbSet<CommunityTagEntity> CommunityTags { get; set; }
@@ -49,8 +51,36 @@ public partial class CSDBContext : DbContext
         modelBuilder
             .HasPostgresEnum("comments_settings", new[] { "closed", "open", "open_for_followers" })
             .HasPostgresEnum("media_type", new[] { "img", "video", "audio", "gif" })
-            .HasPostgresEnum("status_post", new[] { "published", "suggested", "rejected", "deleted" });
+            .HasPostgresEnum("status_post", new[] { "published", "suggested", "rejected", "deleted" })
+            .HasPostgresEnum("status_request", new[] { "pending", "approved", "rejected" });
 
+        modelBuilder.Entity<JoinRequestEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("join_requests_pk");
+
+            entity.ToTable("join_requests");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Community).HasColumnName("community");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.User).HasColumnName("user");
+
+            entity.HasOne(d => d.CommunityNavigation).WithMany(p => p.JoinRequests)
+                .HasForeignKey(d => d.Community)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("join_requests_communities_id_fk");
+
+            entity.HasOne(d => d.UserNavigation).WithMany(p => p.JoinRequests)
+                .HasForeignKey(d => d.User)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("join_requests_users_id_fk");
+        });
+        
         modelBuilder.Entity<CategoryEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("categories_pkey");
@@ -82,6 +112,7 @@ public partial class CSDBContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.PostId).HasColumnName("post_id");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.CreatedBy)
@@ -184,6 +215,8 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Title)
                 .HasColumnType("character varying")
                 .HasColumnName("title");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
+            
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Communities)
                 .HasForeignKey(d => d.CreatedBy)
@@ -252,6 +285,7 @@ public partial class CSDBContext : DbContext
             entity.Property(e => e.Title)
                 .HasColumnType("character varying")
                 .HasColumnName("title");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.CreatedBy)

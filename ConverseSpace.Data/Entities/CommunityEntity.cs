@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using ConverseSpace.Domain.Models.Enums;
 
 namespace ConverseSpace.Data.Entities;
 
@@ -18,6 +20,11 @@ public partial class CommunityEntity
     public bool? Private { get; set; }
 
     public bool? CheckPosts { get; set; }
+    
+    [Column("comments")] 
+    public CommentsSettings Comments { get; set; }
+    
+    public bool? IsDeleted { get; set; }
 
     public virtual ICollection<CommunityTagEntity> CommunityTags { get; set; } = new List<CommunityTagEntity>();
 
@@ -26,4 +33,6 @@ public partial class CommunityEntity
     public virtual ICollection<UserEntity> Followers { get; set; } = new List<UserEntity>();
 
     public virtual ICollection<UserEntity> Users { get; set; } = new List<UserEntity>();
+    
+    public virtual ICollection<JoinRequestEntity> JoinRequests { get; set; } = new List<JoinRequestEntity>();
 }

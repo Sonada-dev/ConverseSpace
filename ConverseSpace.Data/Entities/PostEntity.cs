@@ -14,6 +14,8 @@ public partial class PostEntity
     public DateTime CreatedAt { get; set; }
 
     public Guid CreatedBy { get; set; }
+    
+    public bool? IsDeleted { get; set; }
 
     public virtual ICollection<CommentEntity> Comments { get; set; } = new List<CommentEntity>();
 

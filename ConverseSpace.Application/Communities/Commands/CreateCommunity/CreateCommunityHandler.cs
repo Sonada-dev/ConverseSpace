@@ -16,7 +16,6 @@ public record CreateCommunityRequest : IRequest<Result>
     public required string Title { get; init; }
     [StringLength(512)]
     public string? Description { get; init; }
-    public DateOnly CreatedAt { get; init; }
     public required Guid CreatedBy { get; init; }
     public bool IsPrivate { get; init; }
     public bool CheckPosts { get; init; }

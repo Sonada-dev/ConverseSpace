@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ConverseSpace.Domain.Models.Enums;
 
 namespace ConverseSpace.Data.Entities;
 
@@ -14,6 +15,8 @@ public partial class CommentEntity
     public DateTime CreatedAt { get; set; }
 
     public Guid CreatedBy { get; set; }
+    
+    public bool? IsDeleted { get; set; }
 
     public virtual ICollection<CommentContentMediaEntity> CommentContentMedia { get; set; } = new List<CommentContentMediaEntity>();
 
