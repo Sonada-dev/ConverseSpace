@@ -1,9 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using AutoMapper;
 using ConverseSpace.Application.Authentication.Commands.Register;
+using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Auth;
 using ConverseSpace.Domain.Abstractions.Repositories;
 using ConverseSpace.Domain.Abstractions.Services;
+using ConverseSpace.Domain.Errors;
 using ConverseSpace.Domain.Models;
 
 namespace ConverseSpace.Application.Authentication.Services;
@@ -21,24 +23,25 @@ public class AuthService(
     private readonly IRolesRepository _rolesRepository = rolesRepository;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<string> Register(string username, string email, string password)
+    public async Task<Result> Register(string username, string email, string password)
     {
-        
-        if (!await сheckUsernameUniqueness(username))
-            return "Пользователь с таким никнеймом уже существует";
 
+        if (!await сheckUsernameUniqueness(username))
+            return Result.Failure(AuthErrors.UsernameExist);
+
+        if (!await checkEmailUniqueness(email))
+            return Result.Failure(AuthErrors.EmailExist);
         
         var hashedPassword = _passwordHasher.Generate(password);
 
         var user = new User(username, email, hashedPassword);
-        
 
         await _usersRepository.Add(user);
 
-        return "Пользователь успешно зарегистрирован";
+        return Result.Success();
     }
 
-    public async Task<string> Login(string username, string password)
+    public async Task<Result<string>> Login(string username, string password)
     {
         const string pattern = @"^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$";
 
@@ -50,16 +53,16 @@ public class AuthService(
             user = await _usersRepository.GetByUsername(username);
 
         if (user is null)
-            return "Пользователь не найден.";
+            return Result<string>.Failure(AuthErrors.AccountNotFound);
 
         var result = _passwordHasher.Verify(password, user.PasswordHash);
 
         if (!result)
-            return "Ошибка авторизации";
+            return Result<string>.Failure(AuthErrors.InvalidCredentials);
 
         var token = _jwtProvider.GenerateToken(user);
 
-        return token;
+        return Result<string>.Success(token);
     }
 
     public async Task<string> CreateRole(string name)
@@ -73,6 +76,12 @@ public class AuthService(
     private async Task<bool> сheckUsernameUniqueness(string username)
     {
         var user = await _usersRepository.GetByUsername(username);
+        return user is null;
+    }
+
+    private async Task<bool> checkEmailUniqueness(string email)
+    {
+        var user = await _usersRepository.GetByEmail(email);
         return user is null;
     }
 }

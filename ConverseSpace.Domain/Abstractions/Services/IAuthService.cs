@@ -2,8 +2,8 @@
 
 public interface IAuthService
 {
-    Task<string> Register(string requestUsername, string requestEmail, string requestPassword);
-    Task<string> Login(string username, string password);
+    Task<Result> Register(string requestUsername, string requestEmail, string requestPassword);
+    Task<Result<string>> Login(string username, string password);
     Task<string> CreateRole(string name);
     
 }

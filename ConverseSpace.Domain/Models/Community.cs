@@ -1,44 +1,42 @@
+using ConverseSpace.Domain.Errors;
 using ConverseSpace.Domain.Models.Enums;
 
 namespace ConverseSpace.Domain.Models;
 
 public class Community
 {
-    public Guid Id { get; private set; }
-    public string Title { get; private set; } = null!;
-    public string? Description { get; private set; }
-    public DateOnly CreatedAt { get; private set; }
-    public Guid CreatedBy { get; private set; }
-    public bool IsPrivate { get; private set; }
-    public bool CheckPosts { get; private set; }
-    public CommentsSettings Comments { get; private set; }
-    public ICollection<CommunityTag> Tags { get; private set; } = null!;
-    public ICollection<User> Followers { get; private set; } = null!;
-
-    private Community()
-    {
-        // Private constructor for Entity Framework or other ORM
-    }
-
+    public Community() { }
+    
     public Community(string title,
         string? description,
         Guid createdBy,
         bool isPrivate = false,
         bool checkPosts = false,
-        CommentsSettings commentsSettings = CommentsSettings.open)
+        CommentsSettings commentsSettings = CommentsSettings.Open)
     {
-        Id = Guid.NewGuid();
         Title = title;
         Description = description;
-        CreatedAt = DateOnly.FromDateTime(DateTime.Today);
         CreatedBy = createdBy;
-        IsPrivate = isPrivate;
+        Private = isPrivate;
         CheckPosts = checkPosts;
         Comments = commentsSettings;
-        Tags = new List<CommunityTag>();
-        Followers = new List<User>();
     }
 
+    public Guid Id { get; private set; } = Guid.NewGuid();
+    public string Title { get; private set; } = null!;
+    public string? Description { get; private set; }
+    public DateOnly CreatedAt { get; private set; } = DateOnly.FromDateTime(DateTime.Today);
+    public Guid CreatedBy { get; private set; }
+    public bool Private { get; private set; }
+    public bool CheckPosts { get; private set; }
+    public bool IsDeleted { get; set; }
+    public CommentsSettings Comments { get; private set; }
+    public ICollection<CommunityTag> Tags { get; private set; } = new List<CommunityTag>();
+    public ICollection<User> Followers { get; private set; } = new List<User>();
+    public ICollection<JoinRequest> JoinRequests { get; set; } = new List<JoinRequest>();
+
+    
+    
     public void UpdateTitle(string newTitle)
     {
         Title = newTitle;
@@ -58,16 +56,26 @@ public class Community
     }
 
     // Добавление подписчика
-    public void AddFollower(User follower)
+    public Result AddFollower(User follower)
     {
-        if (!Followers.Contains(follower))
-            Followers.Add(follower);
+        if (Followers.Any(c => c.Id == follower.Id)) 
+            return Result.Failure(FollowsErrors.AlreadyFollowing);
+        
+        Followers.Add(follower);
+        return Result.Success();
+
     }
 
     // Удаление подписчика
-    public void RemoveFollower(User follower)
+    public Result RemoveFollower(Guid followerId)
     {
+        var follower = Followers.FirstOrDefault(c => c.Id == followerId);
+        if (follower == null) 
+            return Result.Failure(FollowsErrors.AlreadyUnfollowing);
+        
         Followers.Remove(follower);
+        return Result.Success();
+
     }
 
     // Обновление описания сообщества
@@ -82,4 +90,13 @@ public class Community
         Comments = newSettings;
     }
     
+    public void UpdatePrivate(bool isPrivate)
+    {
+        Private = isPrivate;
+    }
+    
+    public void Delete(bool isDeleted)
+    {
+        IsDeleted = isDeleted;
+    }
 }

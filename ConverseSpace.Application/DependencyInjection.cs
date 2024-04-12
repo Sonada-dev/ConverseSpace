@@ -1,5 +1,6 @@
 ﻿using ConverseSpace.Application.Authentication.Services;
 using ConverseSpace.Application.Communities.Services;
+using ConverseSpace.Application.Follows.Services;
 using ConverseSpace.Application.Users.Services;
 using ConverseSpace.Domain.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthService,AuthService>();
         services.AddScoped<IUsersService,UsersService>();
         services.AddScoped<ICommunitiesService,CommunitiesService>();
+        services.AddScoped<IFollowsService, FollowsService>();
         
         return services;
     }

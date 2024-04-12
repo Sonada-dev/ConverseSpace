@@ -1,8 +1,13 @@
-﻿namespace ConverseSpace.Domain.Models.Enums;
+﻿using NpgsqlTypes;
+
+namespace ConverseSpace.Domain.Models.Enums;
 
 public enum CommentsSettings
 {
-    closed,
-    open,
-    open_for_followers
+    [PgName("closed")]
+    Closed,
+    [PgName("open")]
+    Open,    
+    [PgName("open_for_followers")]
+    OpenForFollowers
 }

@@ -20,6 +20,19 @@ builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOption
 
 builder.Services.AddApiAuthentication(configuration);
 
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapEnum<CommentsSettings>();
+#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapComposite<CommunityEntity>();
+#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapEnum<StatusRequest>();
+#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapComposite<JoinRequestEntity>();
+#pragma warning restore CS0618 // Type or member is obsolete
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers()
@@ -32,12 +45,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapEnum<CommentsSettings>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapComposite<CommunityEntity>();
-#pragma warning restore CS0618 // Type or member is obsolete
 
 builder.Services.AddDbContext<CSDBContext>(options =>
     options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
@@ -49,6 +56,7 @@ builder.Services.AddDbContext<CSDBContext>(options =>
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<ICommunitiesRepository, CommunitiesRepository>();
+builder.Services.AddScoped<IJoinRequestsRepository, JoinRequestsRepository>();
 
 #endregion
 

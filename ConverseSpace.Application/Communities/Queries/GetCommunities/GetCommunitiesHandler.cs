@@ -30,9 +30,16 @@ public record GetCommunityResponse
     public string? Description { get; init; }
     public DateOnly CreatedAt { get; init; }
     public required Guid CreatedBy { get; init; }
-    public bool IsPrivate { get; init; }
+    public bool Private { get; init; }
     public bool CheckPosts { get; init; }
     public CommentsSettings Comments { get; init; }
-    public ICollection<string> Tags { get; init; } = [];
-    public ICollection<string> Followers { get; init; } = [];
+    public ICollection<CommunityTag> Tags { get; init; } = [];
+    public ICollection<Follower> Followers { get; init; } = [];
 }
+
+public record Follower
+{
+    public Guid Id { get; init; }
+    public required string Username { get; init; }
+}
+
