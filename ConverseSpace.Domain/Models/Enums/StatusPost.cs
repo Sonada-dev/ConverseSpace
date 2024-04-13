@@ -1,9 +1,13 @@
-﻿namespace ConverseSpace.Domain.Models.Enums;
+﻿using NpgsqlTypes;
+
+namespace ConverseSpace.Domain.Models.Enums;
 
 public enum StatusPost : byte
 {
-    published,
-    suggested,
-    rejected,
-    deleted
+    [PgName("published")]
+    Published,
+    [PgName("suggested")]
+    Suggested,
+    [PgName("rejected")]
+    Rejected
 }

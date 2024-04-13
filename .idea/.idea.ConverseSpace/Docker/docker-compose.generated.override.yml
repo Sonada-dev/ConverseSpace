@@ -9,8 +9,9 @@ services:
         BUILD_CONFIGURATION: "Debug"
     command: []
     entrypoint:
-    - "/opt/rider-debugger/linux-x64/dotnet/dotnet"
-    - "/opt/rider-debugger/JetBrains.Debugger.Worker.exe"
+    - "/opt/rider-debugger/linux-x64/JetBrains.Debugger.Worker"
+    - "--runtimeconfig"
+    - "/opt/rider-debugger/JetBrains.Debugger.Worker.runtimeconfig.json"
     - "--mode=server"
     - "--frontend-port=57100"
     - "--backend-port=57300"
@@ -22,15 +23,15 @@ services:
       RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
     image: "conversespace.api:dev"
     ports:
-    - "127.0.0.1:57015:57100"
-    - "127.0.0.1:57215:57300"
+    - "127.0.0.1:57008:57100"
+    - "127.0.0.1:57208:57300"
     volumes:
-    - "D:\\Packages\\.nuget\\packages:/home/app/.nuget/packages"
+    - "D:\\Packages\\.nuget\\packages:/root/.nuget/packages"
     - "F:\\Projects\\ConverseSpace\\ConverseSpace.API:/app:rw"
     - "F:\\Projects\\ConverseSpace:/src:rw"
-    - "C:\\Users\\fel4s\\AppData\\Local\\JetBrains\\RiderRemoteDebugger\\2023.3.4\\\
+    - "C:\\Users\\fel4s\\AppData\\Local\\JetBrains\\RiderRemoteDebugger\\2024.1\\\
       Linux64:/opt/rider-debugger"
     - "D:\\Programs\\JetBrains Rider\\bin:/etc/opt/rider-debugger/backend-log.xml"
-    - "C:\\Users\\fel4s\\AppData\\Local\\JetBrains\\Rider2023.3\\log\\DebuggerWorker\\\
-      JetBrains.Debugger.Worker.2024_4_08_22_05_08:/var/opt/rider-debugger:rw"
+    - "C:\\Users\\fel4s\\AppData\\Local\\JetBrains\\Rider2024.1\\log\\DebuggerWorker\\\
+      JetBrains.Debugger.Worker.2024_4_13_21_47_04:/var/opt/rider-debugger:rw"
     working_dir: "/app"

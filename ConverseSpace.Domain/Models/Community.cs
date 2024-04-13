@@ -33,7 +33,7 @@ public class Community
     public CommentsSettings Comments { get; private set; }
     public ICollection<CommunityTag> Tags { get; private set; } = new List<CommunityTag>();
     public ICollection<User> Followers { get; private set; } = new List<User>();
-    public ICollection<JoinRequest> JoinRequests { get; set; } = new List<JoinRequest>();
+    public ICollection<JoinRequest> JoinRequests { get; private set; } = new List<JoinRequest>();
 
     
     

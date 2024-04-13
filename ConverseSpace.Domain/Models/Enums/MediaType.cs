@@ -1,9 +1,15 @@
-﻿namespace ConverseSpace.Domain.Models.Enums;
+﻿using NpgsqlTypes;
+
+namespace ConverseSpace.Domain.Models.Enums;
 
 public enum MediaType
 {
-    img,
-    video,
-    audio,
-    gif
+    [PgName("img")]
+    Img,
+    [PgName("video")]
+    Video,
+    [PgName("audio")]
+    Audio,
+    [PgName("gif")]
+    Gif
 }

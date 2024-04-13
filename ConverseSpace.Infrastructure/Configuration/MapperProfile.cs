@@ -2,6 +2,7 @@
 using ConverseSpace.Application.Communities.Commands.CreateCommunity;
 using ConverseSpace.Application.Communities.Commands.UpdateCommunity;
 using ConverseSpace.Application.Communities.Queries.GetCommunities;
+using ConverseSpace.Application.Posts.Commands;
 using ConverseSpace.Data.Entities;
 using ConverseSpace.Domain.Models;
 
@@ -27,5 +28,10 @@ public class MapperProfile : Profile
 
         CreateMap<JoinRequest, JoinRequestEntity>();
         CreateMap<JoinRequestEntity, JoinRequest>();
+
+        CreateMap<Post, PostEntity>();
+        CreateMap<PostEntity, Post>();
+        CreateMap<CreatePostCommand, Post>();
+        CreateMap<PostContentMedia, PostContentMediaEntity>();
     }
 }

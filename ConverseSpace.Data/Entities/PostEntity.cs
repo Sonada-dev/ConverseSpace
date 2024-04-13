@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using ConverseSpace.Domain.Models.Enums;
 
 namespace ConverseSpace.Data.Entities;
 
@@ -14,6 +16,9 @@ public partial class PostEntity
     public DateTime CreatedAt { get; set; }
 
     public Guid CreatedBy { get; set; }
+    
+    [Column("status")]
+    public StatusPost Status { get; set; }
     
     public bool? IsDeleted { get; set; }
 
