@@ -4,6 +4,6 @@ namespace ConverseSpace.Domain.Abstractions.Services;
 
 public interface IPostsService
 {
-    Task<Result<List<Post>>> GetPosts();
+    Task<List<Post>> GetPosts();
     Task<Result> CreatePost(Post post);
 }

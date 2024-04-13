@@ -1,11 +1,9 @@
-using System.Security.Claims;
 using ConverseSpace.API.Extensions;
 using ConverseSpace.API.ViewModels;
-using ConverseSpace.Application.Posts.Commands;
-using ConverseSpace.Domain.Models;
+using ConverseSpace.Application.Posts.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConverseSpace.API.Controllers
 {
@@ -15,6 +13,15 @@ namespace ConverseSpace.API.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
+        [Authorize(Roles = "1, 2, 3")]
+        [HttpGet]
+        public async Task<IActionResult> GetPosts()
+        {
+            var posts = await _mediator.Send(new GetPostsRequest());
+            return Ok(posts);
+        }
+        
+        [Authorize(Roles = "1, 2, 3")]
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromForm] UploadViewModel viewModel)
         {
@@ -48,15 +55,6 @@ namespace ConverseSpace.API.Controllers
                 return StatusCode((int)result.Error.Code!, result.Error.Description);
 
             return Ok();
-        }
-
-        private Guid GetUserIdFromContext(HttpContext context)
-        {
-            if (context.Items.TryGetValue("UserId", out var userId) && userId is Guid)
-            {
-                return (Guid)userId;
-            }
-            return Guid.Empty;
         }
     }
 }

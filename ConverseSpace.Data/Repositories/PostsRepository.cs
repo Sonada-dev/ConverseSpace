@@ -13,7 +13,7 @@ public class PostsRepository(CSDBContext context, IMapper mapper) : IPostsReposi
     private readonly CSDBContext _context = context;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<Result<List<Post>>> Get()
+    public async Task<List<Post>> Get()
     {
         var posts = await _context.Posts
             .AsNoTracking()
@@ -21,7 +21,7 @@ public class PostsRepository(CSDBContext context, IMapper mapper) : IPostsReposi
             .ProjectTo<Post>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-        return Result<List<Post>>.Success(posts);
+        return posts;
     }
 
     public async Task<Result> Add(Post post)
