@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using ConverseSpace.API.Extensions;
+using ConverseSpace.API.Middlewares;
 using ConverseSpace.Application;
 using ConverseSpace.Data;
 using ConverseSpace.Data.Entities;
@@ -32,6 +33,18 @@ NpgsqlConnection.GlobalTypeMapper.MapEnum<StatusRequest>();
 #pragma warning disable CS0618 // Type or member is obsolete
 NpgsqlConnection.GlobalTypeMapper.MapComposite<JoinRequestEntity>();
 #pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapEnum<StatusPost>();
+#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapComposite<PostEntity>();
+#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapEnum<MediaType>();
+#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+NpgsqlConnection.GlobalTypeMapper.MapComposite<PostContentMediaEntity>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -57,6 +70,7 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<ICommunitiesRepository, CommunitiesRepository>();
 builder.Services.AddScoped<IJoinRequestsRepository, JoinRequestsRepository>();
+builder.Services.AddScoped<IPostsRepository, PostsRepository>();
 
 #endregion
 
@@ -74,13 +88,17 @@ builder.Services.AddApplication();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
@@ -91,6 +109,8 @@ app.UseCookiePolicy(new CookiePolicyOptions
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<UserInfoMiddleware>();
 
 app.MapControllers();
 

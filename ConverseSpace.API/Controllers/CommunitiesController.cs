@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using ConverseSpace.API.Extensions;
 using ConverseSpace.Application.Communities.Commands.CreateCommunity;
 using ConverseSpace.Application.Communities.Commands.DeleteCommunity;
 using ConverseSpace.Application.Communities.Commands.UpdateCommunity;
@@ -85,8 +86,7 @@ namespace ConverseSpace.API.Controllers
         [HttpPost("{communityId}/follow")]
         public async Task<IActionResult> Follow(Guid communityId)
         {
-            var userId =
-                Guid.Parse(User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)!.Value);
+            var userId = HttpContext.GetUserId();
 
             var result = await _mediator.Send(new FollowCommand(userId, communityId));
             if (result.IsFailure)
@@ -99,8 +99,7 @@ namespace ConverseSpace.API.Controllers
         [HttpDelete("{communityId}/unfollow")]
         public async Task<IActionResult> Unfollow(Guid communityId)
         {
-            var userId =
-                Guid.Parse(User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)!.Value);
+            var userId = HttpContext.GetUserId();
 
             var result = await _mediator.Send(new UnfollowCommand(userId, communityId));
             if (result.IsFailure)
