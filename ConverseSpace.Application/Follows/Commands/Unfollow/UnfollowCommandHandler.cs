@@ -2,7 +2,7 @@ using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Services;
 using MediatR;
 
-namespace ConverseSpace.Application.Communities.Follows.Commands.Unfollow;
+namespace ConverseSpace.Application.Follows.Commands.Unfollow;
 
 public record UnfollowCommand(Guid UserId, Guid CommunityId) : IRequest<Result>;
 

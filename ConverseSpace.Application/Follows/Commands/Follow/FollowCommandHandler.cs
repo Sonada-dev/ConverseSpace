@@ -1,17 +1,20 @@
+using AutoMapper;
 using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Services;
 using MediatR;
 
-namespace ConverseSpace.Application.Communities.Follows.Commands.Follow;
+namespace ConverseSpace.Application.Follows.Commands.Follow;
 
-public record FollowCommand(Guid UserId, Guid CommunityId) : IRequest<Result>;
+public record FollowCommand(Guid Follower, Guid Community) : IRequest<Result>;
 
-public class FollowCommandHandler(IFollowsService followsService) : IRequestHandler<FollowCommand, Result>
+public class FollowCommandHandler(IFollowsService followsService, IMapper mapper) : IRequestHandler<FollowCommand, Result>
 {
     private readonly IFollowsService _followsService = followsService;
-    
+    private readonly IMapper _mapper = mapper;
+
     public async Task<Result> Handle(FollowCommand request, CancellationToken cancellationToken)
     {
-        return await _followsService.Follow(request.UserId, request.CommunityId);
+        var follow = _mapper.Map<Domain.Models.Follow>(request);
+        return await _followsService.Follow(follow);
     }
 }

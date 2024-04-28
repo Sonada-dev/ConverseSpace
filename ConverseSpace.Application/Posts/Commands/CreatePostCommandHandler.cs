@@ -1,6 +1,6 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Services;
@@ -17,7 +17,10 @@ public record CreatePostCommand() : IRequest<Result>
     [Required]
     public required string Title { get; init; }
     [StringLength(2048)] public string? ContentText { get; init; }
+    [JsonIgnore]
     public Guid? CreatedBy { get; set; }
+    [JsonIgnore]
+    public Guid? Community { get; set; }
     public List<UploadResponse> Uploads = new List<UploadResponse>();
 }
 

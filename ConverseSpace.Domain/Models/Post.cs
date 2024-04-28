@@ -9,6 +9,7 @@ public class Post
     public string? ContentText { get; private set; }
     public DateTime CreatedAt { get; private set; } = DateTime.Now;
     public Guid CreatedBy { get; private set; }
+    public Guid Community { get; set; }
     public StatusPost Status { get; private set; }
     public bool IsDeleted { get; private set; }
     public ICollection<PostContentMedia> PostContentMedia { get; private set; } = new List<PostContentMedia>();

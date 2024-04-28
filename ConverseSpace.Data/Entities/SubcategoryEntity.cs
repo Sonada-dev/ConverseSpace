@@ -11,7 +11,9 @@ public partial class SubcategoryEntity
 
     public Guid Parent { get; set; }
 
+    public virtual ICollection<CommunitySubcategoryEntity> CommunitySubcategories { get; set; } = new List<CommunitySubcategoryEntity>();
+
     public virtual CategoryEntity ParentNavigation { get; set; } = null!;
 
-    public virtual ICollection<PostEntity> Posts { get; set; } = new List<PostEntity>();
+    public virtual ICollection<PostSubcategoryEntity> PostSubcategories { get; set; } = new List<PostSubcategoryEntity>();
 }

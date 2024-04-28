@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ConverseSpace.Domain.Models.Enums;
+using NpgsqlTypes;
 
 namespace ConverseSpace.Data.Entities;
 
@@ -16,15 +17,21 @@ public partial class CommentEntity
 
     public Guid CreatedBy { get; set; }
     
+    [PgName("comments")]
+    public CommentsSettings Comments {get; set;}
+    
+
     public bool? IsDeleted { get; set; }
 
+    public int LikesCount { get; set; }
+
+    public int DislikesCount { get; set; }
+
     public virtual ICollection<CommentContentMediaEntity> CommentContentMedia { get; set; } = new List<CommentContentMediaEntity>();
-
-    public virtual ICollection<CommentDislikeEntity> CommentDislikes { get; set; } = new List<CommentDislikeEntity>();
-
-    public virtual ICollection<CommentLikeEntity> CommentLikes { get; set; } = new List<CommentLikeEntity>();
 
     public virtual UserEntity CreatedByNavigation { get; set; } = null!;
 
     public virtual PostEntity? Post { get; set; }
+
+    public virtual ICollection<ReactionEntity> Reactions { get; set; } = new List<ReactionEntity>();
 }

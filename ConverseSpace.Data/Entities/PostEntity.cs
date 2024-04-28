@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using ConverseSpace.Domain.Models.Enums;
+using NpgsqlTypes;
 
 namespace ConverseSpace.Data.Entities;
 
@@ -17,22 +17,28 @@ public partial class PostEntity
 
     public Guid CreatedBy { get; set; }
     
-    [Column("status")]
-    public StatusPost Status { get; set; }
-    
+    [PgName("type")]
+    public StatusPost Type { get; set; }
+
     public bool? IsDeleted { get; set; }
 
+    public Guid Community { get; set; }
+
+    public int LikesCount { get; set; }
+
+    public int DislikesCount { get; set; }
+
     public virtual ICollection<CommentEntity> Comments { get; set; } = new List<CommentEntity>();
+
+    public virtual CommunityEntity CommunityEntityNavigation { get; set; } = null!;
 
     public virtual UserEntity CreatedByNavigation { get; set; } = null!;
 
     public virtual ICollection<PostContentMediaEntity> PostContentMedia { get; set; } = new List<PostContentMediaEntity>();
 
-    public virtual ICollection<PostDislikeEntity> PostDislikes { get; set; } = new List<PostDislikeEntity>();
+    public virtual ICollection<PostSubcategoryEntity> PostSubcategories { get; set; } = new List<PostSubcategoryEntity>();
 
-    public virtual ICollection<PostLikeEntity> PostLikes { get; set; } = new List<PostLikeEntity>();
+    public virtual ICollection<PostTagEntity> PostTags { get; set; } = new List<PostTagEntity>();
 
-    public virtual ICollection<SubcategoryEntity> Subcategories { get; set; } = new List<SubcategoryEntity>();
-
-    public virtual ICollection<CommunityTagEntity> Tags { get; set; } = new List<CommunityTagEntity>();
+    public virtual ICollection<ReactionEntity> Reactions { get; set; } = new List<ReactionEntity>();
 }

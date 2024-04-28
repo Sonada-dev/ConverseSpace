@@ -2,10 +2,12 @@
 using ConverseSpace.Application.Communities.Commands.CreateCommunity;
 using ConverseSpace.Application.Communities.Commands.UpdateCommunity;
 using ConverseSpace.Application.Communities.Queries.GetCommunities;
+using ConverseSpace.Application.Follows.Commands.Follow;
 using ConverseSpace.Application.Posts.Commands;
 using ConverseSpace.Application.Posts.Queries;
 using ConverseSpace.Data.Entities;
 using ConverseSpace.Domain.Models;
+using ConverseSpace.Domain.Models.Enums;
 
 namespace ConverseSpace.Infrastructure.Configuration;
 
@@ -36,5 +38,9 @@ public class MapperProfile : Profile
         CreateMap<PostContentMedia, PostContentMediaEntity>();
         CreateMap<PostContentMediaEntity, PostContentMedia>();
         CreateMap<Post, GetPostsResponse>();
+
+        CreateMap<Follow, FollowEntity>();
+        CreateMap<FollowEntity, Follow>();
+        CreateMap<FollowCommand, Follow>();
     }
 }

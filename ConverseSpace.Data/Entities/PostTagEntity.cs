@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace ConverseSpace.Data.Entities;
 
-public partial class CommunityTagEntity
+public partial class PostTagEntity
 {
     public Guid Id { get; set; }
 
-    public Guid Community { get; set; }
+    public Guid Post { get; set; }
 
     public Guid Tag { get; set; }
 
-    public virtual CommunityEntity CommunityEntityNavigation { get; set; } = null!;
+    public virtual PostEntity PostEntityNavigation { get; set; } = null!;
 
     public virtual TagEntity TagEntityNavigation { get; set; } = null!;
 }

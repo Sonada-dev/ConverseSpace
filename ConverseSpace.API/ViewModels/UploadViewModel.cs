@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using ConverseSpace.Application.Posts.Commands;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ConverseSpace.API.ViewModels;
 

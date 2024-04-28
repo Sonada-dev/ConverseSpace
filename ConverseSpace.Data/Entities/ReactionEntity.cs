@@ -5,20 +5,22 @@ using NpgsqlTypes;
 
 namespace ConverseSpace.Data.Entities;
 
-public partial class JoinRequestEntity
+public partial class ReactionEntity
 {
     public Guid Id { get; set; }
 
     public Guid User { get; set; }
 
-    public Guid Community { get; set; }
+    public Guid? Post { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public Guid? Comment { get; set; }
     
     [PgName("type")]
-    public StatusRequest Type { get; set; }
+    public ReactType Type { get; set; }
 
-    public virtual CommunityEntity CommunityEntityNavigation { get; set; } = null!;
+    public virtual CommentEntity? CommentNavigation { get; set; }
+
+    public virtual PostEntity? PostNavigation { get; set; }
 
     public virtual UserEntity UserEntityNavigation { get; set; } = null!;
 }

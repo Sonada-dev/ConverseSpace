@@ -1,18 +1,11 @@
-using System.Text.Json.Serialization;
 using ConverseSpace.API.Extensions;
 using ConverseSpace.API.Middlewares;
 using ConverseSpace.Application;
 using ConverseSpace.Data;
-using ConverseSpace.Data.Entities;
-using ConverseSpace.Data.Repositories;
-using ConverseSpace.Domain.Abstractions.Auth;
-using ConverseSpace.Domain.Abstractions.Repositories;
-using ConverseSpace.Domain.Models.Enums;
+using ConverseSpace.Infrastructure;
 using ConverseSpace.Infrastructure.Authentication;
-using ConverseSpace.Infrastructure.Configuration;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -21,39 +14,22 @@ builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOption
 
 builder.Services.AddApiAuthentication(configuration);
 
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapEnum<CommentsSettings>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapComposite<CommunityEntity>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapEnum<StatusRequest>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapComposite<JoinRequestEntity>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapEnum<StatusPost>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapComposite<PostEntity>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapEnum<MediaType>();
-#pragma warning restore CS0618 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
-NpgsqlConnection.GlobalTypeMapper.MapComposite<PostContentMediaEntity>();
-#pragma warning restore CS0618 // Type or member is obsolete
-
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
+builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
     {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowCredentials()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
@@ -62,43 +38,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CSDBContext>(options =>
     options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
 
-#region Services
 
-#region Repositories
-
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-builder.Services.AddScoped<IRolesRepository, RolesRepository>();
-builder.Services.AddScoped<ICommunitiesRepository, CommunitiesRepository>();
-builder.Services.AddScoped<IJoinRequestsRepository, JoinRequestsRepository>();
-builder.Services.AddScoped<IPostsRepository, PostsRepository>();
-
-#endregion
-
-#region Others
-builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-
-#endregion
-
-#endregion
-
-builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddApplication();
+builder.Services.AddData();
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
+app.UseCors();
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {

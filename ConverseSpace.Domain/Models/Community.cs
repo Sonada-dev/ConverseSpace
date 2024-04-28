@@ -30,9 +30,11 @@ public class Community
     public bool Private { get; private set; }
     public bool CheckPosts { get; private set; }
     public bool IsDeleted { get; set; }
+    
+    public int FollowersCount { get; private set; } = 0;
     public CommentsSettings Comments { get; private set; }
     public ICollection<CommunityTag> Tags { get; private set; } = new List<CommunityTag>();
-    public ICollection<User> Followers { get; private set; } = new List<User>();
+    public ICollection<Follow> Follows { get; private set; } = new List<Follow>();
     public ICollection<JoinRequest> JoinRequests { get; private set; } = new List<JoinRequest>();
 
     
@@ -54,29 +56,7 @@ public class Community
     {
         Tags.Remove(tag);
     }
-
-    // Добавление подписчика
-    public Result AddFollower(User follower)
-    {
-        if (Followers.Any(c => c.Id == follower.Id)) 
-            return Result.Failure(FollowsErrors.AlreadyFollowing);
-        
-        Followers.Add(follower);
-        return Result.Success();
-
-    }
-
-    // Удаление подписчика
-    public Result RemoveFollower(Guid followerId)
-    {
-        var follower = Followers.FirstOrDefault(c => c.Id == followerId);
-        if (follower == null) 
-            return Result.Failure(FollowsErrors.AlreadyUnfollowing);
-        
-        Followers.Remove(follower);
-        return Result.Success();
-
-    }
+    
 
     // Обновление описания сообщества
     public void UpdateDescription(string? newDescription)

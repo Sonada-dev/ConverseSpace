@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using ConverseSpace.Domain;
 using ConverseSpace.Domain.Abstractions.Services;
@@ -16,7 +17,8 @@ public record CreateCommunityRequest : IRequest<Result>
     public required string Title { get; init; }
     [StringLength(512)]
     public string? Description { get; init; }
-    public required Guid CreatedBy { get; init; }
+    [JsonIgnore]
+    public Guid CreatedBy { get; set; }
     public bool IsPrivate { get; init; }
     public bool CheckPosts { get; init; }
     [EnumDataType(typeof(CommentsSettings))]

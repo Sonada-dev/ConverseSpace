@@ -31,6 +31,9 @@ public class UsersRepository(CSDBContext context, IMapper mapper) : IUsersReposi
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id));
     
+    public async Task<bool> IsUserExist(Guid id) =>
+        await _context.Users.AsNoTracking().AnyAsync(u => u.Id == id);
+    
     public async Task Add(User user)
     {
         await _context.Users.AddAsync(_mapper.Map<UserEntity>(user));

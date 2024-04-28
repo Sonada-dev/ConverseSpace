@@ -21,25 +21,19 @@ public partial class UserEntity
 
     public int Role { get; set; }
 
-    public virtual ICollection<CommentDislikeEntity> CommentDislikes { get; set; } = new List<CommentDislikeEntity>();
-
-    public virtual ICollection<CommentLikeEntity> CommentLikes { get; set; } = new List<CommentLikeEntity>();
-
     public virtual ICollection<CommentEntity> Comments { get; set; } = new List<CommentEntity>();
 
     public virtual ICollection<CommunityEntity> Communities { get; set; } = new List<CommunityEntity>();
 
-    public virtual ICollection<PostDislikeEntity> PostDislikes { get; set; } = new List<PostDislikeEntity>();
+    public virtual ICollection<FollowEntity> Follows { get; set; } = new List<FollowEntity>();
 
-    public virtual ICollection<PostLikeEntity> PostLikes { get; set; } = new List<PostLikeEntity>();
+    public virtual ICollection<JoinRequestEntity> JoinRequests { get; set; } = new List<JoinRequestEntity>();
+
+    public virtual ICollection<ModeratorEntity> Moderators { get; set; } = new List<ModeratorEntity>();
 
     public virtual ICollection<PostEntity> Posts { get; set; } = new List<PostEntity>();
 
+    public virtual ICollection<ReactionEntity> Reactions { get; set; } = new List<ReactionEntity>();
+
     public virtual RoleEntity RoleEntityNavigation { get; set; } = null!;
-
-    public virtual ICollection<CommunityEntity> Communities1 { get; set; } = new List<CommunityEntity>();
-
-    public virtual ICollection<CommunityEntity> CommunitiesNavigation { get; set; } = new List<CommunityEntity>();
-    
-    public virtual ICollection<JoinRequestEntity> JoinRequests { get; set; } = new List<JoinRequestEntity>();
 }

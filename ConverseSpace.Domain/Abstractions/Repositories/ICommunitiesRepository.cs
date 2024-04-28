@@ -9,5 +9,5 @@ public interface ICommunitiesRepository
     Task<Community> GetByIdFull(Guid id);
     Task Add(Community community);
     Task Update(Community community);
-    Task Unfollow(Guid communityId, Guid userId);
+    Task<bool> IsCommunityExist(Guid communityId);
 }

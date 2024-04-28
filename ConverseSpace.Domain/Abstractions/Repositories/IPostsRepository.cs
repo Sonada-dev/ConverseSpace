@@ -4,6 +4,8 @@ namespace ConverseSpace.Domain.Abstractions.Repositories;
 
 public interface IPostsRepository
 {
-    Task<List<Post>> Get();
+    Task<bool> IsPostExist(Guid postId);
+    Task<List<Post>> Get(Guid communityId);
     Task<Result> Add(Post post);
+    Task<Result> Delete(Guid postId);
 }

@@ -1,7 +1,6 @@
 using AutoMapper;
 using ConverseSpace.Domain.Abstractions.Services;
 using ConverseSpace.Domain.Models;
-using ConverseSpace.Domain.Models.Enums;
 using MediatR;
 
 namespace ConverseSpace.Application.Communities.Queries.GetCommunities;
@@ -32,9 +31,9 @@ public record GetCommunityResponse
     public required Guid CreatedBy { get; init; }
     public bool Private { get; init; }
     public bool CheckPosts { get; init; }
-    public CommentsSettings Comments { get; init; }
+    public string? Comments { get; init; }
+    public int FollowersCount { get; init; }
     public ICollection<CommunityTag> Tags { get; init; } = [];
-    public ICollection<Follower> Followers { get; init; } = [];
 }
 
 public record Follower

@@ -4,6 +4,7 @@ namespace ConverseSpace.Domain.Abstractions.Services;
 
 public interface IPostsService
 {
-    Task<List<Post>> GetPosts();
+    Task<Result<List<Post>>> GetPosts(Guid communityId, Guid userId);
     Task<Result> CreatePost(Post post);
+    Task<Result> DeletePost(Guid postId);
 }

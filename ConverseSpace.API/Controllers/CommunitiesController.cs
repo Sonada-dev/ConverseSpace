@@ -3,13 +3,13 @@ using ConverseSpace.API.Extensions;
 using ConverseSpace.Application.Communities.Commands.CreateCommunity;
 using ConverseSpace.Application.Communities.Commands.DeleteCommunity;
 using ConverseSpace.Application.Communities.Commands.UpdateCommunity;
-using ConverseSpace.Application.Communities.Follows.Commands.Follow;
-using ConverseSpace.Application.Communities.Follows.Commands.Unfollow;
-using ConverseSpace.Application.Communities.Follows.Queries.Followers;
 using ConverseSpace.Application.Communities.Follows.Queries.JoinRequests;
 using ConverseSpace.Application.Communities.Queries.GetCommunities;
 using ConverseSpace.Application.Follows.Commands.AproveRequest;
+using ConverseSpace.Application.Follows.Commands.Follow;
 using ConverseSpace.Application.Follows.Commands.RejectRequest;
+using ConverseSpace.Application.Follows.Commands.Unfollow;
+using ConverseSpace.Application.Follows.Queries.Followers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +21,7 @@ namespace ConverseSpace.API.Controllers
     public class CommunitiesController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
-
-        [Authorize(Roles = "1, 2, 3")]
+        
         [HttpGet]
         public async Task<IActionResult> GetCommunities()
         {
@@ -37,6 +36,13 @@ namespace ConverseSpace.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCommunity([FromBody] CreateCommunityRequest request)
         {
+            var userId = HttpContext.GetUserId();
+
+            if (userId == Guid.Empty)
+                return BadRequest("Невозможно получить идентификатор пользователя");
+
+            request.CreatedBy = userId;
+            
             var result = await _mediator.Send(request);
             if (result.IsFailure)
                 return StatusCode((int)result.Error.Code!, result.Error.Description);
@@ -79,7 +85,7 @@ namespace ConverseSpace.API.Controllers
             if (result.Value.Count == 0)
                 return NoContent();
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         [Authorize(Roles = "1, 2, 3")]

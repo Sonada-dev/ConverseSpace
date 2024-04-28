@@ -18,7 +18,7 @@ public class CommunitiesRepository(CSDBContext context, IMapper mapper) : ICommu
     public async Task<List<Community>> Get() =>
         await _context.Communities
             .AsNoTracking()
-            .Include(c => c.Followers)
+            .Include(c => c.Follows)
             .Where(c => c.IsDeleted != true)
             .ProjectTo<Community>(_mapper.ConfigurationProvider)
             .ToListAsync();
@@ -28,7 +28,7 @@ public class CommunitiesRepository(CSDBContext context, IMapper mapper) : ICommu
         var communityEntity = await _context.Communities
             .AsNoTracking()
             .Where(c => c.IsDeleted != true)
-            .Include(c => c.Followers)
+            .Include(c => c.Follows)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         return _mapper.Map<Community>(communityEntity);
@@ -57,12 +57,7 @@ public class CommunitiesRepository(CSDBContext context, IMapper mapper) : ICommu
         _context.Communities.Update(communityEntity);
         await _context.SaveChangesAsync();
     }
-
-    public async Task Unfollow(Guid communityId, Guid userId)
-    {
-        await _context.Database.ExecuteSqlInterpolatedAsync(@$"DELETE
-                FROM public.follows
-                WHERE follower = {userId}
-                  AND community = {communityId}");
-    }
+    
+    public async Task<bool> IsCommunityExist(Guid communityId) =>
+        await _context.Communities.AnyAsync(c => c.Id == communityId);
 }
